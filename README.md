@@ -14,7 +14,7 @@ Use an MCP client that supports **remote Streamable HTTP** connections. Client i
 
 | Connection | Server URL | Authentication | Tools |
 | --- | --- | --- | --- |
-| `qrco` | `https://qrco.ca/mcp` | None | 14 public color tools |
+| `qrco` | `https://qrco.ca/mcp` | None | 15 public color tools |
 | `qrco-account` | `https://qrco.ca/mcp/account` | OAuth | 4 read tools; up to 4 additional write tools with approval |
 
 1. Add `https://qrco.ca/mcp` as a remote MCP server. No API key is needed.
@@ -27,6 +27,7 @@ Manage your connections at [QRCO Agent Access](https://qrco.ca/agent-access). Us
 
 ## What you can do
 
+- **Expand a brand color:** create a 50–950 tonal scale with the exact original retained separately, gamut diagnostics, measured contrast and CSS/Tailwind exports.
 - **Compare and audit:** compare up to five directions with a baseline and brand anchors; audit up to ten palettes against real backgrounds and intended text pairings. Compact summaries keep agent conversations focused.
 - **Explore directions:** generate 2–10 colors with fixed anchors, compare up to five palettes, find public Explore palettes and create variations.
 - **Build a usable color system:** derive light/dark backgrounds, surfaces, text, primary, accent, border and focus roles with measured contrast pairings.
