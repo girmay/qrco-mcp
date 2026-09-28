@@ -6,7 +6,7 @@ Use these prompts in your AI assistant after connecting QRCO. The assistant choo
 
 > My client wants their brand to feel expensive, warm, intelligent and slightly unconventional. Create three palette directions and explain the trade-offs. After I pick one, build light and dark brand roles, report measured contrast, and return CSS and Tailwind CSS v4 tokens plus a QRCO Studio link.
 
-Public tools: `generate_palette_set`, `build_brand_system`, `create_studio_link`. Generation can compare up to five palettes in one call; this is not general batch auditing/export.
+Public tools: `generate_palette_set`, `build_brand_system`, `create_studio_link`. Generation returns up to five directions in one call. Use `compare_palettes` for measured comparison and `audit_palettes` for batch checks; batch export is not yet offered.
 
 ## Keep a brand anchor
 
@@ -43,3 +43,13 @@ Account tool: `get_palette_history`. Requires `palettes:read`. Retrieving an old
 > Publish the saved palette I selected with this description: “A quiet balance of copper warmth and cool, thoughtful greens.” Use its current color names and saved roles, and return the public page link.
 
 Account tool: `publish_palette`. Requires `palettes:publish` and explicit user instruction. Unsaved palettes need a separate private save first with `palettes:save`. Review any agent-drafted description before publication. Private editing never silently republishes the snapshot.
+
+## Compare real choices and audit them together
+
+> Compare these three palettes for a light website on #FFFFFF. Keep #A65F40 as an exact brand anchor. Show which swatches meet 4.5:1 as text on white, which colors changed from the first direction, and any near-duplicates. Explain the trade-offs without assuming every color must work as body text.
+
+Public tool: `compare_palettes`. Supply a unique ID for each palette, `backgrounds: [{id: "page", color: "#FFFFFF", minimum: 4.5}]`, and `anchors: ["#A65F40"]`. Unordered comparison suits unassigned palettes; use indexed only when corresponding positions have the same roles.
+
+> Audit these approved directions together. In each palette, color 0 is button text and color 1 is its fill. Require 4.5:1 for that pairing. Return failures, keep the palette IDs, and do not save anything.
+
+Public tool: `audit_palettes`, with each palette's `pairings: [{foregroundIndex: 0, backgroundIndex: 1, minimum: 4.5}]` and `detail: "failures"`. Full-palette contrast opportunities are diagnostic; specified uses determine which failures matter.
