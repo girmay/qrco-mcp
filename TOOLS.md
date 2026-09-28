@@ -4,7 +4,7 @@
 
 ## Public endpoint: https://qrco.ca/mcp
 
-No authentication; Streamable HTTP. Fourteen tools.
+No authentication; Streamable HTTP. Fifteen tools.
 
 | Tool | Purpose |
 | --- | --- |
@@ -21,6 +21,7 @@ No authentication; Streamable HTTP. Fourteen tools.
 | `create_studio_link` | carry colors, palette title and custom color names into Studio; does not save. |
 | `export_palette` | return CSS, Tailwind CSS v4, SCSS, JSON or SVG content; does not write files. |
 | `search_explore` | browse the public Explore catalog by name or exact HEX. |
+| `generate_tonal_scale` | Build QRCO 50–950 stops from a seed, preserve an original token, measure contrast and export CSS/Tailwind. |
 | `build_brand_system` | derive light, dark or dual-mode roles, measured pairings, semantic CSS and Tailwind exports. |
 
 ## Account endpoint: https://qrco.ca/mcp/account
@@ -63,3 +64,11 @@ Each palette has a unique `id`, `colors` (2–10 HEX values), optional `name` / 
 Comparison defaults: `baselineIndex: 0`, `matching: "unordered"`. Unordered distance averages both directional nearest-neighbor lists; matches can be many-to-one. `indexed` requires equal lengths and compares corresponding positions. Optional `anchors` check exact color retention. Results retain input order and do not choose a winner.
 
 Delta E 2000 uses standard weighting, without capping at 100. `similarityThreshold` defaults to 2, a configurable heuristic rather than a colorblindness or indistinguishability guarantee. All thresholds use unrounded values. No generation or network calls, private mutations or publishing.
+
+## Tonal scales (public v1.2.0)
+
+`generate_tonal_scale` accepts `seed`, optional safe `prefix` (default `brand`), optional `stops` and up to four `backgrounds` with `id`, `color`, and `minimum` (default 4.5). Stops are unique members of 50/100/200/300/400/500/600/700/800/900/950 and returned in ascending order. A subset retains the same colors as the full scale.
+
+The exact seed is preserved as `brand-original`, independently of numbered stops. QRCO uses fixed OKLCH lightness targets, starts from the seed’s hue/chroma, and reduces chroma where needed to fit sRGB. Neutral seeds remain neutral. Each stop returns final HEX/OKLCH, target lightness, gamut diagnostics, measured white/black contrast and any requested background checks. CSS and Tailwind CSS v4 exports include the original plus generated stops.
+
+This is QRCO’s recipe, not Tailwind’s built-in palette or equal-perceptual-distance steps. Stop 500 need not equal the seed. Measurements use final 8-bit colors and unrounded thresholds; no complete-accessibility guarantee. The full 11-stop scale exceeds Studio’s 10-color limit: choose a subset before palette tools. No account save, publication or network calls.
