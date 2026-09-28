@@ -14,7 +14,7 @@ Use an MCP client that supports **remote Streamable HTTP** connections. Client i
 
 | Connection | Server URL | Authentication | Tools |
 | --- | --- | --- | --- |
-| `qrco` | `https://qrco.ca/mcp` | None | 12 public color tools |
+| `qrco` | `https://qrco.ca/mcp` | None | 14 public color tools |
 | `qrco-account` | `https://qrco.ca/mcp/account` | OAuth | 4 read tools; up to 4 additional write tools with approval |
 
 1. Add `https://qrco.ca/mcp` as a remote MCP server. No API key is needed.
@@ -27,6 +27,7 @@ Manage your connections at [QRCO Agent Access](https://qrco.ca/agent-access). Us
 
 ## What you can do
 
+- **Compare and audit:** compare up to five directions with a baseline and brand anchors; audit up to ten palettes against real backgrounds and intended text pairings. Compact summaries keep agent conversations focused.
 - **Explore directions:** generate 2–10 colors with fixed anchors, compare up to five palettes, find public Explore palettes and create variations.
 - **Build a usable color system:** derive light/dark backgrounds, surfaces, text, primary, accent, border and focus roles with measured contrast pairings.
 - **Export design tokens:** CSS, Tailwind CSS v4, SCSS, JSON and SVG palette exports; semantic CSS and Tailwind exports for brand systems.
@@ -63,7 +64,7 @@ A read-only connection intentionally hides write tools. `save_brand_revision` is
 
 Contrast measurements cover the specified opaque sRGB pairings, not complete accessibility certification or colorblindness simulation. CMYK values and Pantone/RAL matches are digital approximations, not physical print specifications. Material modes are creative adjustments, not measured fabric or lighting predictions. Trend generation uses a stored model, not live trend forecasting.
 
-Image extraction, general batch auditing/export, cultural research and trademark clearance are not currently offered. Custom color names are supported; evocative naming is not guaranteed. Version history begins with tracked edits and cannot recover states overwritten before tracking began.
+Image extraction, batch exporting, cultural research and trademark clearance are not currently offered. Custom color names are supported; evocative naming is not guaranteed. Version history begins with tracked edits and cannot recover states overwritten before tracking began.
 
 ## Links and feedback
 
