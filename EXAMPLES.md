@@ -94,3 +94,9 @@ const commitArguments = {
 ```
 
 For this example, build a light-only system first; a system already containing both modes may have nothing to change. Keep `commitArguments` unchanged when retrying that exact commit. Omitting `options` now fails input validation; an altered preview hash/options still cannot commit.
+
+## Verify a brand color as link text
+
+> Build a dual-mode brand system from #767676 and #FEDCBA. Show the existing role pairings and the separate usageChecks. Can the original primary serve as normal-sized link text on the page and card surfaces in each mode? Explain failures, show any suggested link shades with their measured checks, and confirm they are not applied to the saved system or exports. Do not save or publish.
+
+Public tool: `build_brand_system`, `colors: ["#767676", "#FEDCBA"]`, `mode: "both"`. Expect the original primary to pass on white yet fail on the tinted light page; #747474 is the separate light-mode suggestion. The dark-mode suggestion is #7C7C7C. Original primary stays #767676 everywhere in `system`, CSS, Tailwind and Studio metadata. Account `get_saved_palette` returns the same `usageChecks` for a valid saved system, read-only.
