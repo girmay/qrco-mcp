@@ -53,3 +53,11 @@ Public tool: `compare_palettes`. Supply a unique ID for each palette, `backgroun
 > Audit these approved directions together. In each palette, color 0 is button text and color 1 is its fill. Require 4.5:1 for that pairing. Return failures, keep the palette IDs, and do not save anything.
 
 Public tool: `audit_palettes`, with each palette's `pairings: [{foregroundIndex: 0, backgroundIndex: 1, minimum: 4.5}]` and `detail: "failures"`. Full-palette contrast opportunities are diagnostic; specified uses determine which failures matter.
+
+## Build a tonal range without losing the original
+
+> Build a 50–950 tonal scale from #7D4B3F using the token prefix roast. Keep that exact original color as its own token. Check every stop as text on white and #17141D. Show which stops meet 4.5:1, flag any gamut adjustments, and return CSS plus Tailwind CSS v4 tokens. Do not save anything.
+
+Public tool: `generate_tonal_scale` with `seed: "#7D4B3F"`, `prefix: "roast"` and `backgrounds: [{id: "paper", color: "#FFFFFF", minimum: 4.5}, {id: "ink", color: "#17141D", minimum: 4.5}]`. The original stays `roast-original`; stop 500 is not assumed to match.
+
+For a smaller range, request `stops: [100, 300, 500, 700, 900]`. Those values match the corresponding stops in the full scale. Select at most 10 colors when creating a Studio palette link; the complete 11-stop scale is intended for token exports.
