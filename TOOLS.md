@@ -72,3 +72,23 @@ Delta E 2000 uses standard weighting, without capping at 100. `similarityThresho
 The exact seed is preserved as `brand-original`, independently of numbered stops. QRCO uses fixed OKLCH lightness targets, starts from the seed’s hue/chroma, and reduces chroma where needed to fit sRGB. Neutral seeds remain neutral. Each stop returns final HEX/OKLCH, target lightness, gamut diagnostics, measured white/black contrast and any requested background checks. CSS and Tailwind CSS v4 exports include the original plus generated stops.
 
 This is QRCO’s recipe, not Tailwind’s built-in palette or equal-perceptual-distance steps. Stop 500 need not equal the seed. Measurements use final 8-bit colors and unrounded thresholds; no complete-accessibility guarantee. The full 11-stop scale exceeds Studio’s 10-color limit: choose a subset before palette tools. No account save, publication or network calls.
+
+## Argument and save contract (public v1.2.1 / account v1.0.1)
+
+Unknown arguments are rejected instead of silently discarded. Use the refreshed tool schemas: `generate_palette.size`, `generate_palette_set.paletteCount` and `colorsPerPalette`, `random_palette.count` (colors in ONE palette), `create_studio_link.name`, `export_palette.format`, and `compare_palettes.baselineIndex` (zero-based index, not an ID). `vary_palette` has no `variants` filter. Neither generator accepts a free-text `brief`; the assistant maps the brief to supported controls. Choose at most one generation mode. `baseColor` suggests a family; use `lockedColors` for an exact anchor. Recognized families: red, orange, yellow, green, teal, blue, purple, pink, brown, neutral.
+
+For `save_palette`, supply 2–10 six-digit HEX values with `#`; uppercase and lowercase are accepted and stored uppercase. To attach roles, copy **the `system` field** from the public `build_brand_system` response into `brandSystem`, and use `system.palette` as `colors`. Do not pass the whole response or just `{mode, roles}`.
+
+Supported persisted shapes:
+
+| Mode | Required fields |
+| --- | --- |
+| light | `version: 1`, `mode: "light"`, `palette`, `roles` |
+| dark | `version: 2`, `mode: "dark"`, `palette`, `roles` |
+| both | `version: 2`, `mode: "both"`, `palette`, `roles` (light), `darkRoles` |
+
+Every roles object contains exactly `background`, `surface`, `text`, `mutedText`, `primary`, `onPrimary`, `accent`, `onAccent`, `border`, `focus`. The palette must match saved colors in order. Primary/accent must be palette members and agree across modes; measured role contrast must pass validation. A system's format `version` is distinct from a saved palette's revision `version`.
+
+`preview_brand_revision` requires an existing saved `metadata.brandSystem`. Preview options may be omitted or partial; the result returns their complete normalized form. **Saving requires all four returned option fields** (`addMissingMode`, `textContrast`, `uiContrast`, `lockedRoles`), plus the preview's `id`, saved-palette `version`, `previewHash`, and a fresh UUID `requestId`. Copy them; do not rebuild options from the initial request. Only save a feasible preview with changes and user approval. Changed inputs or palette versions require a new preview. Reuse identical arguments/requestId only to retry the same save. No publish occurs.
+
+HEX ratios concern opaque sRGB colors. They do not predict tattoo healing/appearance, physical skin, fabric, paint or lighting. Nearest Pantone catalog results need physical proofing with the production provider; they are not production approval or trademark clearance. Neutral tonal seeds intentionally yield neutral ramps.
