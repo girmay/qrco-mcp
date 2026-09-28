@@ -4,7 +4,7 @@
 
 ## Public endpoint: https://qrco.ca/mcp
 
-No authentication; Streamable HTTP. Twelve tools.
+No authentication; Streamable HTTP. Fourteen tools.
 
 | Tool | Purpose |
 | --- | --- |
@@ -15,6 +15,8 @@ No authentication; Streamable HTTP. Twelve tools.
 | `vary_palette` | produce variations from existing colors. |
 | `match_swatch` | nearest digital Pantone approximation and color-distance result; verify physically for print. |
 | `check_contrast` | WCAG 2.x text contrast for two opaque sRGB colors. |
+| `audit_palettes` | Audit 1–10 identified palettes with actual backgrounds and intended pairings. Compact summaries or detailed failures. |
+| `compare_palettes` | Compare 2–5 palettes against a baseline: Delta E 2000, contrast opportunities and exact anchor retention. |
 | `audit_palette` | measured contrast across palette pairs and black/white foreground suggestions. |
 | `create_studio_link` | carry colors, palette title and custom color names into Studio; does not save. |
 | `export_palette` | return CSS, Tailwind CSS v4, SCSS, JSON or SVG content; does not write files. |
@@ -51,3 +53,13 @@ History begins with tracked edits; older overwritten states are not reconstructe
 Use the same request ID and identical arguments for retries of the same write. A replay receipt confirms the earlier operation, not necessarily the palette's present state; read again when current state matters.
 
 This document summarizes capabilities. The server's advertised tool schemas are authoritative for arguments and validation. Read the [measurement limits](README.md#measurements-and-limits) before treating results as print, accessibility or legal certification.
+
+## Comparison and batch audits (public v1.1.0)
+
+Each palette has a unique `id`, `colors` (2–10 HEX values), optional `name` / `names`, and optional `pairings` with zero-based `foregroundIndex`, `backgroundIndex` and `minimum` (default 4.5). Shared `backgrounds` have `id`, `color` and `minimum`. Limits: 4 backgrounds, 20 pairings per palette. Invalid batches reject completely.
+
+`detail` defaults to `summary`. Choose `failures` for failed intended checks and similar pairs, or `full` for all measurements. Without requested checks, `allRequestedChecksPass` is null. Diagnostic all-pair counts never certify a palette.
+
+Comparison defaults: `baselineIndex: 0`, `matching: "unordered"`. Unordered distance averages both directional nearest-neighbor lists; matches can be many-to-one. `indexed` requires equal lengths and compares corresponding positions. Optional `anchors` check exact color retention. Results retain input order and do not choose a winner.
+
+Delta E 2000 uses standard weighting, without capping at 100. `similarityThreshold` defaults to 2, a configurable heuristic rather than a colorblindness or indistinguishability guarantee. All thresholds use unrounded values. No generation or network calls, private mutations or publishing.
