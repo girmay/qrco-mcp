@@ -1,4 +1,4 @@
-# QRCO MCP — Palette and Color Intelligence
+# QRCO MCP — Palette and Color Intelligence MCP
 
 **Palette and color intelligence for AI agents: generate color palettes, build brand systems, check contrast, export CSS/Tailwind tokens and connect saved libraries.**
 
