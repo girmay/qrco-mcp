@@ -61,3 +61,36 @@ Public tool: `audit_palettes`, with each palette's `pairings: [{foregroundIndex:
 Public tool: `generate_tonal_scale` with `seed: "#7D4B3F"`, `prefix: "roast"` and `backgrounds: [{id: "paper", color: "#FFFFFF", minimum: 4.5}, {id: "ink", color: "#17141D", minimum: 4.5}]`. The original stays `roast-original`; stop 500 is not assumed to match.
 
 For a smaller range, request `stops: [100, 300, 500, 700, 900]`. Those values match the corresponding stops in the full scale. Select at most 10 colors when creating a Studio palette link; the complete 11-stop scale is intended for token exports.
+
+## Exact private save → preview → commit data flow
+
+The variables below represent parsed JSON tool results, not literal strings to send. Account scopes: `palettes:read palettes:save palettes:revise`. No publication scope is needed. Ask the user before saving a new palette or committing a revision.
+
+```js
+// Public build_brand_system response: { system, pairings, css, ... }
+const saveArguments = {
+  requestId: freshUUID(),
+  name: "My reviewed brand system",
+  colors: built.system.palette,
+  brandSystem: built.system
+};
+// saved = result of account save_palette(saveArguments)
+const previewArguments = {
+  id: saved.id,
+  version: saved.version,
+  options: { addMissingMode: true }
+};
+// preview = result of preview_brand_revision(previewArguments)
+// Review changes and failures. Proceed only if feasible, changed, and approved.
+const commitArguments = {
+  id: preview.id,
+  version: preview.version,
+  options: preview.options, // complete returned object, including defaults
+  previewHash: preview.previewHash,
+  requestId: freshUUID()
+};
+// committed = result of save_brand_revision(commitArguments)
+// Read get_saved_palette and get_palette_history to verify.
+```
+
+For this example, build a light-only system first; a system already containing both modes may have nothing to change. Keep `commitArguments` unchanged when retrying that exact commit. Omitting `options` now fails input validation; an altered preview hash/options still cannot commit.
