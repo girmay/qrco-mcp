@@ -100,3 +100,9 @@ For this example, build a light-only system first; a system already containing b
 > Build a dual-mode brand system from #767676 and #FEDCBA. Show the existing role pairings and the separate usageChecks. Can the original primary serve as normal-sized link text on the page and card surfaces in each mode? Explain failures, show any suggested link shades with their measured checks, and confirm they are not applied to the saved system or exports. Do not save or publish.
 
 Public tool: `build_brand_system`, `colors: ["#767676", "#FEDCBA"]`, `mode: "both"`. Expect the original primary to pass on white yet fail on the tinted light page; #747474 is the separate light-mode suggestion. The dark-mode suggestion is #7C7C7C. Original primary stays #767676 everywhere in `system`, CSS, Tailwind and Studio metadata. Account `get_saved_palette` returns the same `usageChecks` for a valid saved system, read-only.
+
+## Keep a named family without losing explicit locks
+
+> Generate five colors with baseColor red. Verify metadata.baseColorConstraint and show the actual HEX values. Then repeat with material fabric and a green #00FF00 locked at index 1. The green must remain exact and be reported as a family exception; all other colors must stay within the returned red family bounds. Do not save or claim these colors are automatically safe for alerts.
+
+For `generate_palette`, pass `size: 5`, `baseColor: "red"`; second call adds `material: "fabric"`, `lockedColors: [{index: 1, hex: "#00FF00"}]`. For three family-constrained options, use `generate_palette_set` with `paletteCount: 3`, `colorsPerPalette: 5`, `baseColor: "red"`.
