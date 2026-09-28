@@ -92,3 +92,15 @@ Every roles object contains exactly `background`, `surface`, `text`, `mutedText`
 `preview_brand_revision` requires an existing saved `metadata.brandSystem`. Preview options may be omitted or partial; the result returns their complete normalized form. **Saving requires all four returned option fields** (`addMissingMode`, `textContrast`, `uiContrast`, `lockedRoles`), plus the preview's `id`, saved-palette `version`, `previewHash`, and a fresh UUID `requestId`. Copy them; do not rebuild options from the initial request. Only save a feasible preview with changes and user approval. Changed inputs or palette versions require a new preview. Reuse identical arguments/requestId only to retry the same save. No publish occurs.
 
 HEX ratios concern opaque sRGB colors. They do not predict tattoo healing/appearance, physical skin, fabric, paint or lighting. Nearest Pantone catalog results need physical proofing with the production provider; they are not production approval or trademark clearance. Neutral tonal seeds intentionally yield neutral ramps.
+
+## Brand colors used as links (public v1.3.0 / account v1.1.0)
+
+`build_brand_system` and `get_saved_palette` (when a valid brand system is attached) now return `usageChecks` separately from existing `pairings`. This tests primary and accent as normal-sized link text against **both background and surface in each stored mode**, at 4.5:1. Four checks per mode; eight for dual mode. An existing system can pass all button/body/outline pairings and still fail these link uses.
+
+Inspect `failureCount`, `originalColorsPassAllListedSurfaces`, and `modes[].links[]`. Each link has its original HEX, per-surface checks, `passesOnAllListedSurfaces`, and a `status`. Failures may include `suggestedLinkColor` with a HEX, measured checks and `applied: false`. A passing link needs no suggestion. `no-suggestion-found` means the bounded search found none, not proof that no color exists.
+
+Example: primary #767676 passes on white at 4.5422:1 but fails on its generated #FBFBFB page at 4.3895:1. The light-mode suggestion #747474 passes both. Dark mode is checked independently and may need a different shade. Pass/fail uses unrounded measurements.
+
+Suggestions are separate colors for review, obtained by bounded mixing toward black or white and least squared RGB change among sampled passing candidates. They do not modify anchors, saved roles, history, the Studio URL or CSS/Tailwind exports. No schema migration, new scope or new tool is needed. Existing revisions still operate on the existing ten roles; suggestions are not saved link roles.
+
+Use a persistent non-color cue such as an underline for inline links. Surrounding body-text contrast is informational; this audit does not certify link identification or focus behavior. See [W3C Use of Color](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color) and [Contrast Minimum](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum). Other surfaces, overlays, images and hover/visited states are outside this check; use explicit `audit_palettes` background/pairing inputs or `check_contrast` for other opaque HEX pairs.
