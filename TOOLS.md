@@ -115,6 +115,6 @@ This makes the family request enforceable; it does not assign danger/status mean
 
 `brief` and `variants` were already absent from the preceding MCP schemas; strict validation now rejects them instead of ignoring them. `vary_palette` already required 2–10 colors. Brand-system `pairings` already include focus/background and focus/surface checks; geometry, occlusion and full focus accessibility remain outside those measurements.
 
-## Pantone option by tool
+## Nearest Pantone option by tool
 
 `includePantone` is accepted by `generate_palette` and `inspect_color`, but **not** by `generate_palette_set`. Omit it from batch-generation calls; unknown arguments are rejected. To obtain a nearest Pantone catalog match for a chosen batch color, call `match_swatch` with its `hex`. This documents the current schemas; it does not add batch matching or certify physical print results.
