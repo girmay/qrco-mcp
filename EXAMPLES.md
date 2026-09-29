@@ -146,3 +146,9 @@ Ask: “Get this saved palette and tell me when it was first created and last sa
 Ask: “Read this palette's history and explain what changed in each version. Use changeSummary, show the UTC dates, and tell me if a predecessor is unavailable. Do not change anything.”
 
 Account v1.3.0 supplies measured snapshot differences, such as “Renamed palette,” “Added dark mode,” or “Changed light roles: border, text.” These describe saved data, not the author's identity or intent.
+
+## Design interaction colors on actual surfaces
+
+Ask: “Build interaction colors for a copper button on white. Keep the original copper, check text and focus contrast, and explain failures. The focus ring touches the copper fill, so include that as an adjacent color. Give me CSS and Tailwind tokens.”
+
+Use generate_state_colors with baseColor #A65F40, surface #FFFFFF, focusAdjacentColors [#A65F40]. Add other actual touching state fills as necessary. Disabled checks remain informational; no color-only tool certifies focus geometry or an entire interface.
