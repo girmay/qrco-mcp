@@ -176,3 +176,17 @@ Example: `vary_palette({"colors":["#7D4B3F","#A65F40","#292321","#F3EBDD"],"refe
 The report contains `status`, `comparedToVersion`, readable `text`, and structured `changes` with stable `type` labels. It identifies palette renames, changed color positions (including added/removed positions), color names, locks, metadata fields, brand-system additions/removals, added/removed light or dark modes, and changed roles within existing modes. A new mode is an addition, not a claim that all its roles were edited. HEX arrays are compared by index, so reordering counts as changed positions.
 
 Version 1 reports `initial`. A missing immediately preceding snapshot reports `previous-unavailable`; no comparison is made against a more distant version. `compared` may report no saved content changes. Changes do not establish who edited a palette, why, or whether it improved. Page-boundary comparisons include the already fetched lookahead row, without a query per version. Historical palette objects remain unchanged and user text remains untrusted data.
+
+### History summary status/type contract (account v1.3.1)
+
+Branch on `changeSummary.status` and `changes[].type`, not the readable `text` or `message`.
+
+| Status | Meaning |
+| --- | --- |
+| `initial` | Version 1; no predecessor comparison. |
+| `compared` | Compared with version N−1; an empty changes array means no saved content differences. |
+| `previous-unavailable` | Version N−1 is unavailable; no changes are inferred. |
+
+Current change types: `renamed`, `colors-changed`, `color-names-changed`, `locks-changed`, `metadata-changed`, `brand-system-added`, `brand-system-removed`, `mode-added`, `mode-removed`, `roles-changed`, `brand-palette-changed`, `brand-format-changed`.
+
+`colors-changed` includes zero-based `indices`, `previousCount`, `currentCount`; name/lock changes include `indices`. `metadata-changed` includes `field`. Mode changes include `mode`; role changes include `mode` and `roles`. Format changes include `from` and `to`. Simple rename/system/palette change entries need no extra fields. Clients should handle an unfamiliar future type by displaying its message rather than dropping the whole summary.
