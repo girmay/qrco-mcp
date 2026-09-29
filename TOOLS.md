@@ -142,3 +142,11 @@ For `preview_brand_revision`, provide the saved palette's `id` and current `vers
 `success:true` means the lookup completed, not that a close match exists. Inspect `matchQuality.band`, `isCloseMatch`, and `warning` before recommending a swatch. QRCO's conservative review bands are: near ≤2, approximate >2–5, distant >5–10, poor >10. They are product heuristics, not industry acceptance tolerances. Decisions use the unrounded `evaluatedDeltaE`; approximate, distant and poor results carry warnings. Even near matches have `physicalProofRequired:true` for the intended substrate, finish and lighting.
 
 For example, `match_swatch({"hex":"#FF00FF"})` currently finds a nearest Pantone swatch at CIE76 ΔE 30.686, explicitly marked `poor` and `isCloseMatch:false`. Report it as a poor catalog approximation, not a production-ready match. No physical rendering or trademark clearance is implied.
+
+## Repeatable variations (public v1.5.0)
+
+`vary_palette` accepts optional `referenceColors`: retain the original HEX array, in the same count and role order as `colors`, and send it on every call. All alternatives are generated from that reference instead of the latest input. Keeping the same reference, material and chosen variation ID produces the same colors across repeated calls; switching materials or references deliberately changes the result.
+
+Without `referenceColors`, existing relative behavior remains: Soft adds lightness and reduces chroma; repeated Soft/Muted choices can accumulate lightening/desaturation. Each returned palette now includes `variationContext` with `mode`, normalized `sourceColors`, measured `meanLightnessChangeFromSource` (CIELAB L* units, not ΔE), a cumulative-transform warning in relative mode, and a note explaining reference mode. The server cannot infer or remember an omitted original. This does not preserve individual anchors or certify contrast; use `compare_palettes` and explicit pairing checks to review alternatives.
+
+Example: `vary_palette({"colors":["#7D4B3F","#A65F40","#292321","#F3EBDD"],"referenceColors":["#7D4B3F","#A65F40","#292321","#F3EBDD"],"count":3,"material":"digital"})`. For a follow-up, replace `colors` with a result while keeping `referenceColors` unchanged. No `variants` filter is supported; select a returned `id`.
