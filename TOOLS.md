@@ -118,3 +118,19 @@ This makes the family request enforceable; it does not assign danger/status mean
 ## Nearest Pantone option by tool
 
 `includePantone` is accepted by `generate_palette` and `inspect_color`, but **not** by `generate_palette_set`. Omit it from batch-generation calls; unknown arguments are rejected. To obtain a nearest Pantone catalog match for a chosen batch color, call `match_swatch` with its `hex`. This documents the current schemas; it does not add batch matching or certify physical print results.
+
+## Save identity and revision readiness (account v1.1.1)
+
+`save_palette` deduplicates within the authorized account against **current stored content**: normalized palette name, ordered colors, and complete metadata. Normalization trims palette/custom-name whitespace, uppercases HEX colors and canonicalizes object-key order. Array order matters. Custom color names, the complete brand system, and Studio metadata (`locks`, `style`, `harmony`, `source`) participate. Missing metadata is not equivalent to an explicitly populated field. Two entries with the same palette name and HEX values may therefore be distinct. No automatic merging or deletion occurs.
+
+`requestId` is separate retry protection. For the same action, reuse the same UUID and identical arguments; a replay returns the original receipt. With a new UUID, identical normalized current content returns the existing palette ID with `existing:true`. If the original palette was subsequently renamed or revised, saving its old payload may create a new palette. Deleting it also removes the current-content match. There is no `description` parameter on private `save_palette`; public descriptions belong to the explicit publication flow.
+
+For `preview_brand_revision`, provide the saved palette's `id` and current `version`. Inspect the new additive fields:
+
+| status | canSave | Meaning |
+| --- | --- | --- |
+| `ready-to-save` | true | Feasible changes exist; review before committing. |
+| `unchanged` | false | Existing roles already satisfy the minimums; no commit is needed. |
+| `infeasible` | false | Requested constraints cannot be met by the adjustment method. |
+
+`feasible:true` means the constraints are satisfied, not that anything changed. Lowering a contrast target does not lighten roles or restore a previous version. `saveMessage` explains the outcome. Commit only a reviewed `canSave:true` result with the exact returned `id`, `version`, complete normalized `options`, `previewHash`, and a fresh request UUID. Old preview hashes remain compatible because readiness fields are outside the hashed revision result. An unchanged commit is rejected without creating history or advancing the version.
