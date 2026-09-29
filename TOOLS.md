@@ -134,3 +134,11 @@ For `preview_brand_revision`, provide the saved palette's `id` and current `vers
 | `infeasible` | false | Requested constraints cannot be met by the adjustment method. |
 
 `feasible:true` means the constraints are satisfied, not that anything changed. Lowering a contrast target does not lighten roles or restore a previous version. `saveMessage` explains the outcome. Commit only a reviewed `canSave:true` result with the exact returned `id`, `version`, complete normalized `options`, `previewHash`, and a fresh request UUID. Old preview hashes remain compatible because readiness fields are outside the hashed revision result. An unchanged commit is rejected without creating history or advancing the version.
+
+## Swatch match quality (public v1.4.0)
+
+`match_swatch` and `inspect_color` now return `distanceMetric` and `matchQuality` alongside each nearest catalog result. Pantone ranking retains **CIE76**; RAL retains **CIEDE2000**. These numeric distances are not interchangeable. Existing nearest matches and displayed distances are unchanged.
+
+`success:true` means the lookup completed, not that a close match exists. Inspect `matchQuality.band`, `isCloseMatch`, and `warning` before recommending a swatch. QRCO's conservative review bands are: near ≤2, approximate >2–5, distant >5–10, poor >10. They are product heuristics, not industry acceptance tolerances. Decisions use the unrounded `evaluatedDeltaE`; approximate, distant and poor results carry warnings. Even near matches have `physicalProofRequired:true` for the intended substrate, finish and lighting.
+
+For example, `match_swatch({"hex":"#FF00FF"})` currently finds a nearest Pantone swatch at CIE76 ΔE 30.686, explicitly marked `poor` and `isCloseMatch:false`. Report it as a poor catalog approximation, not a production-ready match. No physical rendering or trademark clearance is implied.
