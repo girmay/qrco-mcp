@@ -136,3 +136,7 @@ Public v1.6.0 reports source indices and exact HEX matches separately. Save the 
 Ask: “Tell me my saved palette total using list_saved_palettes.totalCount. For a palette with history, show its latest version dates using createdAtIso. Read only; do not change anything.”
 
 Account v1.2.0 returns the full total even on an empty page. Follow nextOffset to inspect every palette; separate pages can reflect intervening library changes. History ISO dates are UTC version timestamps, alongside the original millisecond values.
+
+## Read the latest save date without another call
+
+Ask: “Get this saved palette and tell me when it was first created and last saved.” Account v1.2.1 provides createdAtIso and updatedAtIso directly on get_saved_palette. updatedAtIso corresponds to the current version's history date; createdAtIso is the original palette creation date.
