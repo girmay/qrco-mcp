@@ -152,3 +152,9 @@ Account v1.3.0 supplies measured snapshot differences, such as “Renamed palett
 Ask: “Build interaction colors for a copper button on white. Keep the original copper, check text and focus contrast, and explain failures. The focus ring touches the copper fill, so include that as an adjacent color. Give me CSS and Tailwind tokens.”
 
 Use generate_state_colors with baseColor #A65F40, surface #FFFFFF, focusAdjacentColors [#A65F40]. Add other actual touching state fills as necessary. Disabled checks remain informational; no color-only tool certifies focus geometry or an entire interface.
+
+## Review color-vision differences without changing a palette
+
+> Check #FF0000, #00AA00 and #FFFFFF as Stop, Go and Paper using check_color_vision, with all pairs included. Explain which pairs need review and whether they were already close. Preserve every original color. Suggest labels/icons or patterns, not an automatic recolor. State that the blue-yellow result is severe tritanomaly, not tritanopia. Measure actual text contrast separately. Don't save or publish.
+
+Flags are heuristic and condition-specific; neither an empty result nor a large simulated distance proves accessibility.
