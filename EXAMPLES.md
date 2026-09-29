@@ -130,3 +130,9 @@ Public v1.5.0 adds fixed-reference generation. It is stateless: omit referenceCo
 Ask: “Build both modes from my palette. Explain the primary/accent selections, darkest/lightest text seeds and derived roles using construction. List unreferencedColors without dropping them from my palette.”
 
 Public v1.6.0 reports source indices and exact HEX matches separately. Save the unchanged result.system object, not the construction report.
+
+## Count a library and read its history dates
+
+Ask: “Tell me my saved palette total using list_saved_palettes.totalCount. For a palette with history, show its latest version dates using createdAtIso. Read only; do not change anything.”
+
+Account v1.2.0 returns the full total even on an empty page. Follow nextOffset to inspect every palette; separate pages can reflect intervening library changes. History ISO dates are UTC version timestamps, alongside the original millisecond values.
