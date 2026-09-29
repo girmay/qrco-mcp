@@ -81,7 +81,7 @@ const previewArguments = {
   options: { addMissingMode: true }
 };
 // preview = result of preview_brand_revision(previewArguments)
-// Review changes and failures. Proceed only if feasible, changed, and approved.
+// Review changes and failures. Proceed only if preview.canSave === true and approved.
 const commitArguments = {
   id: preview.id,
   version: preview.version,
@@ -106,3 +106,9 @@ Public tool: `build_brand_system`, `colors: ["#767676", "#FEDCBA"]`, `mode: "bot
 > Generate five colors with baseColor red. Verify metadata.baseColorConstraint and show the actual HEX values. Then repeat with material fabric and a green #00FF00 locked at index 1. The green must remain exact and be reported as a family exception; all other colors must stay within the returned red family bounds. Do not save or claim these colors are automatically safe for alerts.
 
 For `generate_palette`, pass `size: 5`, `baseColor: "red"`; second call adds `material: "fabric"`, `lockedColors: [{index: 1, hex: "#00FF00"}]`. For three family-constrained options, use `generate_palette_set` with `paletteCount: 3`, `colorsPerPalette: 5`, `baseColor: "red"`.
+
+## Recognize a no-op revision before committing
+
+> Read my selected brand system and current version. Preview the baseline textContrast 4.5 and uiContrast 3. Report status, canSave and saveMessage. If status is unchanged, tell me the existing roles already meet the targets and stop; do not attempt a save. Lowering targets should not be presented as restoring older colors.
+
+This is read-only. `feasible:true` and `canSave:false` is a valid unchanged outcome.
