@@ -14,7 +14,7 @@ Use an MCP client that supports **remote Streamable HTTP** connections. Client i
 
 | Connection | Server URL | Authentication | Tools |
 | --- | --- | --- | --- |
-| `qrco` | `https://qrco.ca/mcp` | None | 16 public color tools |
+| `qrco` | `https://qrco.ca/mcp` | None | 17 public color tools |
 | `qrco-account` | `https://qrco.ca/mcp/account` | OAuth | 4 read tools; up to 4 additional write tools with approval |
 
 1. Add `https://qrco.ca/mcp` as a remote MCP server. No API key is needed.
@@ -28,6 +28,7 @@ Manage your connections at [QRCO Agent Access](https://qrco.ca/agent-access). Us
 ## What you can do
 
 - **Expand a brand color:** create a 50–950 tonal scale with the exact original retained separately, gamut diagnostics, measured contrast and CSS/Tailwind exports.
+- **Review color-vision differences:** simulate protanopia, deuteranopia and severe tritanomaly; inspect pair-separation flags with explicit model limits. Add non-color cues; no accessibility certification.
 - **Compare and audit:** compare up to five directions with a baseline and brand anchors; audit up to ten palettes against real backgrounds and intended text pairings. Compact summaries keep agent conversations focused.
 - **Explore directions:** generate 2–10 colors with fixed anchors, compare up to five palettes, find public Explore palettes and create variations.
 - **Build a usable color system:** derive light/dark backgrounds, surfaces, text, primary, accent, border and focus roles with measured contrast pairings.
@@ -63,7 +64,7 @@ A read-only connection intentionally hides write tools. `save_brand_revision` is
 
 ## Measurements and limits
 
-Contrast measurements cover the specified opaque sRGB pairings, not complete accessibility certification or colorblindness simulation. CMYK values and Pantone/RAL matches are digital approximations, not physical print specifications. Material modes are creative adjustments, not measured fabric or lighting predictions. Trend generation uses a stored model, not live trend forecasting.
+Contrast measurements cover the specified opaque sRGB pairings, not complete accessibility certification. The separate `check_color_vision` tool supplies bounded simulations and heuristic pair review; it does not simulate tritanopia or certify distinguishability. CMYK values and Pantone/RAL matches are digital approximations, not physical print specifications. Material modes are creative adjustments, not measured fabric or lighting predictions. Trend generation uses a stored model, not live trend forecasting.
 
 Image extraction, batch exporting, cultural research and trademark clearance are not currently offered. Custom color names are supported; evocative naming is not guaranteed. Version history begins with tracked edits and cannot recover states overwritten before tracking began.
 
@@ -74,4 +75,4 @@ Image extraction, batch exporting, cultural research and trademark clearance are
 - [Live plain-text reference](https://qrco.ca/mcp-guide.md)
 - [Agent-readable documentation index](https://qrco.ca/llms.txt)
 
-For feedback, include the MCP client, tool name, expected result and a sanitized error. Never post credentials or private palette contents in public issues. Documentation last reviewed September 28, 2026.
+For feedback, include the MCP client, tool name, expected result and a sanitized error. Never post credentials or private palette contents in public issues. Documentation last reviewed September 29, 2026.
