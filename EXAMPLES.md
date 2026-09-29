@@ -140,3 +140,9 @@ Account v1.2.0 returns the full total even on an empty page. Follow nextOffset t
 ## Read the latest save date without another call
 
 Ask: “Get this saved palette and tell me when it was first created and last saved.” Account v1.2.1 provides createdAtIso and updatedAtIso directly on get_saved_palette. updatedAtIso corresponds to the current version's history date; createdAtIso is the original palette creation date.
+
+## Explain a palette's version history
+
+Ask: “Read this palette's history and explain what changed in each version. Use changeSummary, show the UTC dates, and tell me if a predecessor is unavailable. Do not change anything.”
+
+Account v1.3.0 supplies measured snapshot differences, such as “Renamed palette,” “Added dark mode,” or “Changed light roles: border, text.” These describe saved data, not the author's identity or intent.
