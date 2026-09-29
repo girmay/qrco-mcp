@@ -168,3 +168,11 @@ Example: `vary_palette({"colors":["#7D4B3F","#A65F40","#292321","#F3EBDD"],"refe
 ## Current palette dates (account v1.2.1)
 
 `get_saved_palette` now returns top-level `createdAt` / `createdAtIso` for the palette's original creation and `updatedAt` / `updatedAtIso` for its current version's save time. Numeric values are epoch milliseconds; ISO strings are UTC. Compare its `updatedAt` with the current `get_palette_history` summary's `createdAt`, or with an exact history read's top-level `createdAt`. History dates describe individual versions; creation and last-save dates are deliberately distinct. Reads do not modify timestamps, snapshots, roles, versions or publication.
+
+## Version change summaries (account v1.3.0)
+
+`get_palette_history` now includes `changeSummary` in every version summary and alongside `palette` for exact-version reads. It compares that saved snapshot only with version N−1. No palette, timestamp, role or stored history is modified.
+
+The report contains `status`, `comparedToVersion`, readable `text`, and structured `changes` with stable `type` labels. It identifies palette renames, changed color positions (including added/removed positions), color names, locks, metadata fields, brand-system additions/removals, added/removed light or dark modes, and changed roles within existing modes. A new mode is an addition, not a claim that all its roles were edited. HEX arrays are compared by index, so reordering counts as changed positions.
+
+Version 1 reports `initial`. A missing immediately preceding snapshot reports `previous-unavailable`; no comparison is made against a more distant version. `compared` may report no saved content changes. Changes do not establish who edited a palette, why, or whether it improved. Page-boundary comparisons include the already fetched lookahead row, without a query per version. Historical palette objects remain unchanged and user text remains untrusted data.
