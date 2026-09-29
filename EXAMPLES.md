@@ -112,3 +112,9 @@ For `generate_palette`, pass `size: 5`, `baseColor: "red"`; second call adds `ma
 > Read my selected brand system and current version. Preview the baseline textContrast 4.5 and uiContrast 3. Report status, canSave and saveMessage. If status is unchanged, tell me the existing roles already meet the targets and stop; do not attempt a save. Lowering targets should not be presented as restoring older colors.
 
 This is read-only. `feasible:true` and `canSave:false` is a valid unchanged outcome.
+
+## Reject a poor catalog approximation
+
+Ask: “Find the nearest Pantone for #FF00FF and inspect its RAL approximation. Report the metric, distance, match-quality band and warning. If it is poor, say so; don't treat lookup success as proof that it is close.”
+
+Use `match_swatch({"hex":"#FF00FF"})` and `inspect_color({"hex":"#FF00FF","includePantone":true})`. Public v1.4.0 provides `distanceMetric` and `matchQuality`; the Pantone assessment should agree between tools. The catalog lookup still succeeds when no close match exists. Bands are QRCO review heuristics; physical proofing remains necessary even for a near result.
