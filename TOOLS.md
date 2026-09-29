@@ -4,7 +4,7 @@
 
 ## Public endpoint: https://qrco.ca/mcp
 
-No authentication; Streamable HTTP. Fifteen tools.
+No authentication; Streamable HTTP. Sixteen tools.
 
 | Tool | Purpose |
 | --- | --- |
@@ -21,6 +21,7 @@ No authentication; Streamable HTTP. Fifteen tools.
 | `create_studio_link` | carry colors, palette title and custom color names into Studio; does not save. |
 | `export_palette` | return CSS, Tailwind CSS v4, SCSS, JSON or SVG content; does not write files. |
 | `search_explore` | browse the public Explore catalog by name or exact HEX. |
+| `generate_state_colors` | Generate interaction/focus colors with actual-surface checks, disabled exclusions and CSS/Tailwind tokens. |
 | `generate_tonal_scale` | Build QRCO 50–950 stops from a seed, preserve an original token, measure contrast and export CSS/Tailwind. |
 | `build_brand_system` | derive light, dark or dual-mode roles, measured pairings, semantic CSS and Tailwind exports. |
 
@@ -190,3 +191,19 @@ Branch on `changeSummary.status` and `changes[].type`, not the readable `text` o
 Current change types: `renamed`, `colors-changed`, `color-names-changed`, `locks-changed`, `metadata-changed`, `brand-system-added`, `brand-system-removed`, `mode-added`, `mode-removed`, `roles-changed`, `brand-palette-changed`, `brand-format-changed`.
 
 `colors-changed` includes zero-based `indices`, `previousCount`, `currentCount`; name/lock changes include `indices`. `metadata-changed` includes `field`. Mode changes include `mode`; role changes include `mode` and `roles`. Format changes include `from` and `to`. Simple rename/system/palette change entries need no extra fields. Clients should handle an unfamiliar future type by displaying its message rather than dropping the whole summary.
+
+## Interaction-state colors (public v1.7.0)
+
+`generate_state_colors` creates a deterministic draft for an opaque filled control. Required: `baseColor`, `surface` (actual background). Optional: `foreground` (exact text color for enabled states), `focusColor` (exact ring color), `focusAdjacentColors` (up to four additional touching colors), `textMinimum` (4.5–7, default4.5), safe token `prefix` (default `brand`). Surface is always included in focus checks. No modes, hover overrides or saved-system input are accepted.
+
+Default keeps the original HEX. Hover, active/pressed and selected use fixed OKLCH lightness offsets with chroma reduction into sRGB; selected is not a semantic substitute for hover. Without a fixed foreground, each state chooses black or white. Enabled text checks use the requested minimum; fill-to-surface checks use3:1 for uses where the fill conveys the control/state. They are pair measurements, not automatic interface violations or certification. Failed checks stay visible; the base is never silently repaired.
+
+Focus checks only declared adjacent colors. Add the actual control fills when the ring touches them; otherwise an assumed offset gap must really exist. Automatic focus checks the base then257 lightness samples, selecting a passing candidate closest in OKLCH lightness; this is bounded search, not global optimization. Supplied focusColor is unchanged even when it fails. If no candidate passes all listed surfaces, focus.color is null, status is unresolved, the summary fails overall, and no focus token is exported. Rendered focus area, occlusion and same-pixel focused/unfocused contrast are outside the tool's scope.
+
+Disabled text/surface checks are informational: `minimum:null`, `passes:null`, excluded from summary totals. This exemption applies only to genuinely inactive controls. Colors are opaque mixtures for the specified surface, not CSS opacity. Between-state contrast is also informational; use labels/icons and real interaction testing for distinguishability.
+
+The result returns `states`, `focus`, a measured `summary`, warnings, CSS custom properties and Tailwindv4 `@theme` tokens. Exports contain draft tokens even when checks fail (except unresolved focus); inspect summary before using them. No account save, publication or existing brand role is changed.
+
+Example: `generate_state_colors({"baseColor":"#A65F40","surface":"#FFFFFF","focusAdjacentColors":["#A65F40"],"prefix":"copper"})`.
+
+Sources: [text contrast and inactive controls](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html), [non-text contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html), [focus appearance](https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html). Adjacent-color contrast concerns1.4.11;2.4.11 concerns occlusion. HEX pairs alone do not establish2.4.13 focus appearance compliance.
