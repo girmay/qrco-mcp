@@ -124,3 +124,9 @@ Use `match_swatch({"hex":"#FF00FF"})` and `inspect_color({"hex":"#FF00FF","inclu
 Ask: “Keep these original colors as referenceColors while we explore Soft, Bold and Muted alternatives. Reuse the original reference on every vary_palette call, even if colors contains our latest selection. Compare changes against the original and recheck our actual text/background pairings.”
 
 Public v1.5.0 adds fixed-reference generation. It is stateless: omit referenceColors and transforms apply to the latest input, with a warning in variationContext. Reference mode deliberately regenerates alternatives from the original instead of accumulating edits.
+
+## Explain where each brand role came from
+
+Ask: “Build both modes from my palette. Explain the primary/accent selections, darkest/lightest text seeds and derived roles using construction. List unreferencedColors without dropping them from my palette.”
+
+Public v1.6.0 reports source indices and exact HEX matches separately. Save the unchanged result.system object, not the construction report.
