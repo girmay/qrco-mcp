@@ -4,7 +4,7 @@
 
 ## Public endpoint: https://qrco.ca/mcp
 
-No authentication; Streamable HTTP. Sixteen tools.
+No authentication; Streamable HTTP. Seventeen tools.
 
 | Tool | Purpose |
 | --- | --- |
@@ -21,6 +21,7 @@ No authentication; Streamable HTTP. Sixteen tools.
 | `create_studio_link` | carry colors, palette title and custom color names into Studio; does not save. |
 | `export_palette` | return CSS, Tailwind CSS v4, SCSS, JSON or SVG content; does not write files. |
 | `search_explore` | browse the public Explore catalog by name or exact HEX. |
+| `check_color_vision` | Simulate protanopia/deuteranopia/severe tritanomaly and flag pair separation for review. |
 | `generate_state_colors` | Generate interaction/focus colors with actual-surface checks, disabled exclusions and CSS/Tailwind tokens. |
 | `generate_tonal_scale` | Build QRCO 50–950 stops from a seed, preserve an original token, measure contrast and export CSS/Tailwind. |
 | `build_brand_system` | derive light, dark or dual-mode roles, measured pairings, semantic CSS and Tailwind exports. |
@@ -207,3 +208,24 @@ The result returns `states`, `focus`, a measured `summary`, warnings, CSS custom
 Example: `generate_state_colors({"baseColor":"#A65F40","surface":"#FFFFFF","focusAdjacentColors":["#A65F40"],"prefix":"copper"})`.
 
 Sources: [text contrast and inactive controls](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html), [non-text contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html), [focus appearance](https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html). Adjacent-color contrast concerns1.4.11;2.4.11 concerns occlusion. HEX pairs alone do not establish2.4.13 focus appearance compliance.
+
+
+## Color-vision review (public v1.8.0)
+
+`check_color_vision` simulates a palette and measures pair separation in the resulting display colors. Required `colors`: 2–10 opaque 3/6-digit HEX strings (either case, optional #). Optional `names`: exactly one nonempty label per color, max100 characters. No saved-library permission is needed; it never saves, changes colors or modifies brand roles.
+
+- `types`: unique subset of `protanopia`, `deuteranopia`, `tritanomaly`; default all three. Fixed Machado severity1. The last is explicitly **severe tritanomaly approximation, not tritanopia**. `tritanopia`, achromatopsia and custom severity are unsupported and rejected.
+- `reviewThreshold`: 1–20, default5. Flags use **unrounded simulated CIEDE2000 < threshold**. This is a QRCO review heuristic, not a validated threshold for CVD discrimination or a WCAG requirement.
+- `includeAllPairs`: defaultfalse. Always returns `flaggedPairs`; true also returns every `pairs` measurement (max45 per simulation).
+
+`original` preserves normalized HEX, order and names. Each `cvdChecks` entry carries its type/label/severity, `simulatedColors` with clipping diagnostics, pair counts and flagged pairs. Pair indices are zero-based input positions; results stay in index order. Measurements include `originalDeltaE2000`, `simulatedDeltaE2000` and `distanceChange` (simulated minus original; negative means reduced separation), rounded to four decimals for display. Flags use raw values.
+
+Pair `reason`: `original-duplicate` for identical original HEX; `already-close` for a flagged pair below threshold before simulation; `newly-close` for a flagged pair that crosses below threshold; `not-flagged` otherwise. `identicalSimulatedHex` identifies equality after display rounding. Summary `flaggedPairEvaluationCount` sums across simulations, so a pair can be counted three times. No pass/fail or whole-palette accessibility verdict is returned. No flags does **not** guarantee distinguishability.
+
+Method: decode sRGB to linear RGB, apply published Machado/Oliveira/Fernandes matrices, clip channels to [0,1], encode and round to 8-bit HEX. `gamutClipped`/`clippedChannels` report out-of-range channels, including tiny matrix precision overshoots. Clipping and rounding can reduce separation. CIEDE2000 uses CIELAB D65 and standard weights on final displayed HEX; this metric is not validated as a measure of what a person with CVD can discriminate. Simulations approximate selected conditions and cannot reproduce every person's experience.
+
+Use labels, icons, patterns or position for meaning. Run `check_contrast` separately on original text/background colors. No contrast-under-simulation WCAG claims, physical material predictions or automatic fixes. Existing contrast and brand-system tools are unchanged; these checks are a separate public tool, not embedded in saved reads.
+
+Example: `check_color_vision({"colors":["#FF0000","#00AA00","#FFFFFF"],"names":["Stop","Go","Paper"],"includeAllPairs":true})`. Red/green becomes a newly-close pair under deuteranopia (simulated ΔE2000 about2.5798); use additional cues.
+
+Sources: [Machado et al. paper](https://doi.org/10.1109/TVCG.2009.113), [published matrix values via Colour Science](https://raw.githubusercontent.com/colour-science/colour/develop/colour/blindness/datasets/machado2010.py), [Colour's documented tritanomaly limitation](https://colour.readthedocs.io/en/latest/_modules/colour/blindness/machado2009.html).
