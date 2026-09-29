@@ -14,7 +14,7 @@ Use an MCP client that supports **remote Streamable HTTP** connections. Client i
 
 | Connection | Server URL | Authentication | Tools |
 | --- | --- | --- | --- |
-| `qrco` | `https://qrco.ca/mcp` | None | 15 public color tools |
+| `qrco` | `https://qrco.ca/mcp` | None | 16 public color tools |
 | `qrco-account` | `https://qrco.ca/mcp/account` | OAuth | 4 read tools; up to 4 additional write tools with approval |
 
 1. Add `https://qrco.ca/mcp` as a remote MCP server. No API key is needed.
