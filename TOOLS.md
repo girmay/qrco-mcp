@@ -306,4 +306,22 @@ Token identifiers are the palette keys (e.g. brand-1); CSS adds --, SCSS adds $,
 
 Example: `export_palette({"colors":["#767676","#FFFFFF"],"names":["Ink","Paper"],"accessible":"aa","contrastMinimum":4.8,"format":"css","prefix":"proof"})`. It exports the unchanged colors with ratio4.5422: standard passes, requested4.8fails, statusunmet, margins+0.0422/−0.2578. There is no recoloring to make the report pass.
 
-The report is handoff documentation, not runtime enforcement, a signature or accessibility certification. Comments/metadata may be removed by build tools or downstream applications; preserve the JSON export when a durable sidecar is needed. Recheck actual use and any edits. No Adobe/Figma native format or synchronization is implemented by this update.
+The report is handoff documentation, not runtime enforcement, a signature or accessibility certification. Comments/metadata may be removed by build tools or downstream applications; preserve the JSON export when a durable sidecar is needed. Recheck actual use and any edits. This v1.11.0 update did not add Adobe/Figma formats; v1.12.0 adds portable ASE/DTCG exports described below. Direct synchronization remains separate.
+
+## Portable Adobe and Figma exports (public v1.12.0)
+
+`export_palette` adds `format:"ase"` and `format:"dtcg"`. Both preserve input order and normalized RGB colors; neither writes files, saves palettes, syncs applications, or invents brand roles/modes. Existing five formats retain their behavior.
+
+- **Adobe ASE:** `content` is **base64**, `encoding:"base64"`, `fileName:"<prefix>.ase"`, with a byteLength. Decode it to binary before saving. Ordered normal RGB swatches retain custom names (including Unicode); no CMYK conversion, ICC profile or spot-ink/Pantone specification. Import through the receiving Adobe application's swatch-library controls. Duplicate labels are retained in the file; apps may rename or merge them.
+- **Figma/DTCG:** `content` is UTF-8 JSON, `encoding:"utf-8"`, `fileName:"<prefix>.tokens.json"`. Uses DTCG 2025.10 color tokens with sRGB components, alpha1 and HEX. Safe prefix-index keys become variable names; custom labels become `$description`, so duplicate names do not collide. In Figma Variables, create a new collection and drag this one JSON file into the Variables view to import one mode. Importing into an existing mode can replace matching variables.
+- **Measured context:** optional accessible/contrastMinimum still measures exact adjacent token pairs without changing colors. DTCG carries context in `$extensions["ca.qrco"]`. ASE cannot carry the report: its `sidecar` contains fileName, mimeType, encoding and UTF-8 JSON content with tokens and contrast context. Keep that JSON alongside the ASE, including any failed target. With no target the context explicitly says not-requested. Importers may discard extensions/descriptions; retain the source report.
+
+Example: `{"colors":["#767676","#FFFFFF"],"names":["Ink","Paper"],"prefix":"brand","format":"ase","accessible":"aa","contrastMinimum":4.8}` returns unchanged gray/white swatches and a sidecar reporting the unmet 4.8 target. Use `format:"dtcg"` for the matching token file.
+
+Format and import references: [Adobe ASE exchange](https://helpx.adobe.com/uk/illustrator/desktop/manage-colors/use-swatches/share-swatches-between-applications.html), [Figma token import](https://help.figma.com/hc/en-us/articles/15343816063383-Modes-for-variables), [DTCG color format](https://www.designtokens.org/tr/2025.10/color/). Files are tested structurally and ASE with an independent decoder; actual Adobe/Figma application import remains a manual acceptance step. Direct sync and saved brand-system mode export remain later work.
+
+### HEX contracts (public v1.12.0; account v1.3.2)
+
+Published JSON Schema patterns explicitly include uppercase and lowercase HEX, matching existing runtime behavior. Public color arguments retain optional # and 3/6 digits; account save_palette.colors still requires # and six digits. No case/canonicalization or account permission changes.
+
+`search_explore` rejects malformed hash-prefixed queries such as `#GG0000` or `#1234` before catalog retrieval. Valid HEX matches exact normalized colors; other queries still match literal palette names. An empty result for a valid literal name is not a semantic search verdict.
