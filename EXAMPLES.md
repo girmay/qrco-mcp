@@ -174,3 +174,9 @@ Flags are heuristic and condition-specific; neither an empty result nor a large 
 ## Hand off measured contrast with the colors
 
 > Export #767676 and #FFFFFF as CSS, naming them Ink and Paper. Use accessible:"aa" and contrastMinimum:4.8. Preserve both exact colors and include the measured report, even though the higher target fails. Explain which pairs were checked. Also return JSON as a sidecar if the build removes comments. Do not silently recolor or claim the whole palette is accessible.
+
+## Hand a palette to Adobe or Figma
+
+> Export this palette with my color names as Adobe ASE and DTCG JSON for Figma Variables. Decode the ASE base64 into a real .ase file, save the supplied report sidecar beside it, and give me the .tokens.json file. Preserve the AA target of 4.8 and any failures. Do not recolor, save my library, or sync either app.
+
+The agent needs file-writing capability to provide downloads; QRCO returns content only. Import into a new Figma collection for the first test. ASE stores normal RGB swatches, not physical-print/spot-ink specifications.
