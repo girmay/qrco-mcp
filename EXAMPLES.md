@@ -180,3 +180,7 @@ Flags are heuristic and condition-specific; neither an empty result nor a large 
 > Export this palette with my color names as Adobe ASE and DTCG JSON for Figma Variables. Decode the ASE base64 into a real .ase file, save the supplied report sidecar beside it, and give me the .tokens.json file. Preserve the AA target of 4.8 and any failures. Do not recolor, save my library, or sync either app.
 
 The agent needs file-writing capability to provide downloads; QRCO returns content only. Import into a new Figma collection for the first test. ASE stores normal RGB swatches, not physical-print/spot-ink specifications.
+
+## Review interaction risks
+
+> Generate state colors for #3B82F6 on white. Explain the warnings and focus.fillDiagnostics before calling it usable. If the ring will touch the button, rerun with that fill in focusAdjacentColors. Report text, surface and focus margins; do not count disabled checks as failures.
