@@ -252,7 +252,7 @@ Threshold references: [W3C normal-text AA](https://www.w3.org/WAI/WCAG22/Underst
 
 ## Optional contrast headroom (public v1.9.0)
 
-`generate_palette` accepts optional numeric `contrastMinimum` together with `accessible`. Example: `{"accessible":"aa","contrastMinimum":4.8,"size":5}` or `{"accessible":"aaa","contrastMinimum":7.5,"size":5}`. Minimum allowed is4.5foraa or7foraaa; maximum21. Missing accessible, a lower target, conflicting generation modes and invalid numbers are rejected. No custom headroom parameter on `generate_palette_set` or `random_palette`; those defaults are unchanged.
+`generate_palette` (and `vary_palette` since v1.10.0) accepts optional numeric `contrastMinimum` together with `accessible`. Example: `{"accessible":"aa","contrastMinimum":4.8,"size":5}` or `{"accessible":"aaa","contrastMinimum":7.5,"size":5}`. Minimum allowed is4.5foraa or7foraaa; maximum21. Missing accessible, a lower target, conflicting generation modes and invalid numbers are rejected. No custom headroom parameter on `generate_palette_set` or `random_palette`; those defaults are unchanged.
 
 Omitting the option preserves existing generation exactly. With it, the existing bounded search targets the requested ratio on final adjacent pairs, after material styling and exact-lock restoration. The first passing candidate is used; no additional hidden buffer is added. Larger targets can change colors more or leave a locked target unmet. This is not a color-drift guarantee; remeasure downstream colors and actual text/background usage.
 
@@ -263,3 +263,26 @@ Omitting the option preserves existing generation exactly. With it, the existing
 - Margins are signed **contrast-ratio differences**, not percentages, rounded to four decimals for display. All pass decisions use unrounded ratios. A displayed zero margin can hide a tiny positive/negative value; use the booleans for the verdict.
 
 Example with exact locks #767676/#FFFFFF and aa/contrastMinimum4.8: measured4.5422, `meetsStandard:true`, `passes:false`, standard margin+0.0422, target margin−0.2578, report `status:"unmet"` and `allStandardPairsPass:true`. Both colors remain exact. Standard compliance and requested headroom are deliberately separate. Saved palettes are not rewritten.
+
+
+## Contrast-aware variations (public v1.10.0)
+
+`vary_palette` accepts optional `accessible:"aa"|"aaa"` and `contrastMinimum` using the same adjacent-pair contract as generation. Supply them explicitly on **every call**; input HEX and referenceColors do not carry a prior target. The original defaults and variation operators remain unchanged when omitted.
+
+Each variation returns `contrastContext` and `contrastTarget`:
+
+- Without accessible: contrastContext.status=`not-requested`, inherited=false, an explicit warning that prior AA/AAA/headroom can be broken, and contrastTarget=null. Audit actual pairs before use; no implied carry-forward.
+- With accessible: contrastContext.status=`explicit-target` (a request marker, not a verdict), inherited=false, and a newly measured contrastTarget report. Read its met/unmet status, exact final pairs and standard/target margins.
+- Apply variation, then material styling, then bounded contrast re-targeting. This may weaken the intended style or make alternatives identical, especially at21:1. There is no uniqueness or aesthetic-preservation guarantee.
+- contrastMinimum requires accessible and must lie between the selected standard (4.5/7) and21. Omit it for the standard target. Returned checks apply only to consecutive pairs, never all palette pairs or a whole interface.
+- Fixed-reference stability requires the same referenceColors, material, operation **and contrast settings** each time. Contrast checks describe the final result, including re-targeting.
+
+Example: `vary_palette({"colors":["#000000","#959595","#000000","#959595"],"accessible":"aaa","contrastMinimum":7.5,"count":3})`. This source passes7:1, while an ordinary un-targeted Soft variation can fail it; the explicit target is re-evaluated after the variation. No account saves.
+
+The MCP variation tool does not accept locks. Its backend API's existing locked/keepLocked option preserves exact locks when an explicit target is requested; impossible targets remain unmet.
+
+## Cross-tool contrast boundaries
+
+A palette's adjacent-pair target is not inherited by other HEX-only tools. `audit_palette` tests all pairs; a failed non-adjacent pair does not contradict a met adjacent-pair target. `build_brand_system` derives different roles and checks its own listed4.5text/3UI pairings, not the input palette's AAA/headroom target. `export_palette` currently exports colors/tokens only and does not preserve the target report; carry the report separately. Richer export metadata and configurable brand-role targets remain follow-ups, not shipped features.
+
+`random_palette` defaults to five colors when count is omitted (the old description saying random size was incorrect). A target is a requested contract; always inspect the measured verdict.
