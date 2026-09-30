@@ -81,3 +81,5 @@ Image extraction, batch exporting, cultural research and trademark clearance are
 For feedback, include the MCP client, tool name, expected result and a sanitized error. Never post credentials or private palette contents in public issues. Documentation last reviewed September 29, 2026.
 
 Portable design-app handoff: `export_palette` supports Adobe ASE swatch files (base64 binary plus a JSON report sidecar) and DTCG sRGB JSON for Figma Variables import. Custom names and exact RGB colors are preserved; direct sync is not included. See [format and import details](TOOLS.md#portable-adobe-and-figma-exports-public-v1120).
+
+State diagnostics name failing enabled checks, report signed contrast margins, and warn when a focus ring could blend into an undeclared touching fill. Palette audits identify duplicate colors and clarify all-pair scope. Measurements never imply a complete interface certification.
