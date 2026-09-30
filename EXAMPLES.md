@@ -170,3 +170,7 @@ Flags are heuristic and condition-specific; neither an empty result nor a large 
 ## Keep a target through variation
 
 > Vary these colors with accessible:"aaa" and contrastMinimum:7.5. Keep the original referenceColors for repeatable alternatives. Inspect each variant's contrastTarget, report all failures, and explain if re-targeting changes the style or produces duplicate alternatives. Don't assume an earlier target carries through HEX alone. Don't save anything.
+
+## Hand off measured contrast with the colors
+
+> Export #767676 and #FFFFFF as CSS, naming them Ink and Paper. Use accessible:"aa" and contrastMinimum:4.8. Preserve both exact colors and include the measured report, even though the higher target fails. Explain which pairs were checked. Also return JSON as a sidecar if the build removes comments. Do not silently recolor or claim the whole palette is accessible.
