@@ -91,7 +91,7 @@ Supported persisted shapes:
 
 Every roles object contains exactly `background`, `surface`, `text`, `mutedText`, `primary`, `onPrimary`, `accent`, `onAccent`, `border`, `focus`. The palette must match saved colors in order. Primary/accent must be palette members and agree across modes; measured role contrast must pass validation. A system's format `version` is distinct from a saved palette's revision `version`.
 
-`preview_brand_revision` requires an existing saved `metadata.brandSystem`. Preview options may be omitted or partial; the result returns their complete normalized form. **Saving requires all four returned option fields** (`addMissingMode`, `textContrast`, `uiContrast`, `lockedRoles`), plus the preview's `id`, saved-palette `version`, `previewHash`, and a fresh UUID `requestId`. Copy them; do not rebuild options from the initial request. Only save a feasible preview with changes and user approval. Changed inputs or palette versions require a new preview. Reuse identical arguments/requestId only to retry the same save. No publish occurs.
+`preview_brand_revision` requires an existing saved `metadata.brandSystem`. Preview options may be omitted or partial; the result returns their complete normalized form. **Saving requires all four returned option fields** (`addMissingMode`, `textContrast`, `uiContrast`, `lockedRoles`), plus the preview's `id`, saved-palette `version`, `previewHash`, and a fresh UUID `requestId`. Copy them; do not rebuild options from the initial request. Only save a reviewed canSave:true preview; changes may be roles or targetChange. Changed inputs or palette versions require a new preview. Reuse identical arguments/requestId only to retry the same save. No publish occurs.
 
 HEX ratios concern opaque sRGB colors. They do not predict tattoo healing/appearance, physical skin, fabric, paint or lighting. Nearest Pantone catalog results need physical proofing with the production provider; they are not production approval or trademark clearance. Neutral tonal seeds intentionally yield neutral ramps.
 
@@ -135,7 +135,7 @@ For `preview_brand_revision`, provide the saved palette's `id` and current `vers
 | `unchanged` | false | Existing roles already satisfy the minimums; no commit is needed. |
 | `infeasible` | false | Requested constraints cannot be met by the adjustment method. |
 
-`feasible:true` means the constraints are satisfied, not that anything changed. Lowering a contrast target does not lighten roles or restore a previous version. `saveMessage` explains the outcome. Commit only a reviewed `canSave:true` result with the exact returned `id`, `version`, complete normalized `options`, `previewHash`, and a fresh request UUID. Old preview hashes remain compatible because readiness fields are outside the hashed revision result. An unchanged commit is rejected without creating history or advancing the version.
+`feasible:true` means the constraints are satisfied, not that anything changed. Lowering a contrast target does not lighten roles or restore a previous version. `saveMessage` explains the outcome. Commit only a reviewed `canSave:true` result with the exact returned `id`, `version`, complete normalized `options`, `previewHash`, and a fresh request UUID. Re-preview after v1.14.0: measured pair details and persisted targets change the hashed result. An unchanged commit is rejected without creating history or advancing the version.
 
 ## Swatch match quality (public v1.4.0)
 
@@ -189,7 +189,7 @@ Branch on `changeSummary.status` and `changes[].type`, not the readable `text` o
 | `compared` | Compared with version N−1; an empty changes array means no saved content differences. |
 | `previous-unavailable` | Version N−1 is unavailable; no changes are inferred. |
 
-Current change types: `renamed`, `colors-changed`, `color-names-changed`, `locks-changed`, `metadata-changed`, `brand-system-added`, `brand-system-removed`, `mode-added`, `mode-removed`, `roles-changed`, `brand-palette-changed`, `brand-format-changed`.
+Current change types: `renamed`, `colors-changed`, `color-names-changed`, `locks-changed`, `metadata-changed`, `brand-system-added`, `brand-system-removed`, `mode-added`, `mode-removed`, `roles-changed`, `brand-palette-changed`, `brand-format-changed`, `contrast-target-changed`.
 
 `colors-changed` includes zero-based `indices`, `previousCount`, `currentCount`; name/lock changes include `indices`. `metadata-changed` includes `field`. Mode changes include `mode`; role changes include `mode` and `roles`. Format changes include `from` and `to`. Simple rename/system/palette change entries need no extra fields. Clients should handle an unfamiliar future type by displaying its message rather than dropping the whole summary.
 
@@ -283,7 +283,7 @@ The MCP variation tool does not accept locks. Its backend API's existing locked/
 
 ## Cross-tool contrast boundaries
 
-A palette's adjacent-pair target is not inherited by other HEX-only tools. `audit_palette` tests all pairs; a failed non-adjacent pair does not contradict a met adjacent-pair target. `build_brand_system` derives different roles and checks its own listed4.5text/3UI pairings, not the input palette's AAA/headroom target. `export_palette` now optionally remeasures and embeds an explicitly supplied target (v1.11.0); omitted targets are not inherited. Configurable brand-role targets remain a follow-up.
+A palette's adjacent-pair target is not inherited by other HEX-only tools. `audit_palette` tests all pairs; a failed non-adjacent pair does not contradict a met adjacent-pair target. `build_brand_system` derives different roles and checks its own listed4.5text/3UI pairings, not the input palette's AAA/headroom target. `export_palette` now optionally remeasures and embeds an explicitly supplied target (v1.11.0); omitted targets are not inherited. Public v1.14.0 adds explicit persisted textContrast/uiContrast; see below.
 
 `random_palette` defaults to five colors when count is omitted (the old description saying random size was incorrect). A target is a requested contract; always inspect the measured verdict.
 
@@ -335,3 +335,24 @@ Each text, surface and focus check includes `standardMinimum`, `marginAboveStand
 `focus.fillDiagnostics` compares the chosen ring with each enabled default/hover/active/selected fill: state, fill, ratio, declaredAdjacent, potentialConflict and informationalOnly. potentialConflict means the raw ratio is below3 **if those colors touch**. Undeclared comparisons are informational, excluded from totals; they do not assume layout or downgrade `passes-listed-pairs`. A warning identifies undeclared fills needing review. Add actual touching colors to focusAdjacentColors; verify a real offset/alternative indicator otherwise. Already-declared colors are measured once in focus.checks, not double-counted. Unresolved focus has an empty diagnostic list and still exports no focus token.
 
 `audit_palette` now returns `scope:"all-pairs"` and `duplicates:[{hex,indices}]` (normalized HEX, zero-based indices). Colors and ratio-1 duplicate pairs remain present. Its note explains raw-threshold decisions and that failing non-adjacent pairs do not contradict a separate adjacent-only generation target. The audit receives no prior target and does not claim to have verified one.
+
+## Persisted brand-role targets (public v1.14.0; account v1.4.0)
+
+`build_brand_system` accepts optional numeric `textContrast` (4.5–7; use7 for normal-text AAA on the listed pairs) and `uiContrast` (3–4.5 for listed border/focus pairs). These names match revision options. This tool does not accept accessible, contrastMinimum, or a caller-supplied contrast report. Prior palette targets cannot be inferred from HEX.
+
+Example: `{"colors":["#123456","#FEDCBA"],"mode":"both","textContrast":7,"uiContrast":4.5}`. Palette colors, primary/accent and generated backgrounds stay fixed; supporting roles may move toward black or white. A successful explicit request returns `feasible:true`, `canSave:true` and a saveable `system` with `contrastTarget:{textMinimum:7,uiMinimum:4.5}`. The persisted object is only a constraint, not a trusted pass label. Save validation independently measures every listed role pair against it. Copy the complete system to save_palette. No database migration or automatic update of existing saved palettes occurs.
+
+The outer `contrastTarget` is the freshly measured report: source, scope listed-brand-role-pairs, targets, met/unmet status, counts and exact pair measurements. CSS/Tailwind include this report as a comment, including default-floor context on legacy systems. Pair fields include exact role colors and signed margins above the AA/UI floor and requested target. Comments can be stripped downstream; preserve the source JSON. Studio links, saved metadata and account reads retain the constraint. Studio previews/exports use it; rebuilding in Studio retains an existing target and refuses invalid results.
+
+**Infeasible request:** copper #A65F40 as primary cannot support7:1 button text while staying fixed. The builder returns `feasible:false`, `canSave:false`, measured pairings/failures and `system:null`, `css:null`, `tailwind:null`, `studioUrl:null`, `usageChecks:null`. It does not return a lower-target system as though the request succeeded. This is a bounded search result, not a proof that every alternative design is impossible.
+
+`usageChecks` remains separate: primary/accent used as links are tested against the system's text target (or legacy4.5). Link failures remain visible even when all role pairs pass; suggestions stay `applied:false` and never become saved roles or replace anchors. Brand and link pair checks report signed margins; no interface, geometry, CVD or physical-print certification.
+
+### Revision and history contract
+
+- Omitted preview text/UI targets inherit the saved constraint; legacy systems use4.5/3. Partial requests preserve the omitted saved target. Normalized options still contain all four fields required at commit.
+- Successful raised revision targets are persisted. Legacy no-op/default-floor previews remain unchanged. Explicit builder defaults are also persisted when supplied.
+- `changes` remains a list of role changes. New `targetChange` separately carries before/after constraints (null before means legacy defaults). A target-only change can be `ready-to-save` with `changes:[]` and `canSave:true`; review it before committing. Lowering a persisted target changes the contract, not the colors.
+- Unchanged constraints and roles yield canSave:false. Infeasible revisions still yield no saveable system. Commit requires the exact current version, normalized options and previewHash; **refresh previews made before this release**, because their measured result/hash changed.
+- History adds machine type `contrast-target-changed`, with before/after values. Existing historical snapshots and publication snapshots are not rewritten. Save/revise remains private and never republishes automatically.
+- Existing v1 light/v2 dark-or-both system formats remain accepted. Optional contrastTarget is strictly validated; forged status fields, omitted numeric target members and failed role pairs are rejected. Legacy saved systems are not retroactively claimed to meet stronger targets.
