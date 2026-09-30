@@ -162,3 +162,7 @@ Flags are heuristic and condition-specific; neither an empty result nor a large 
 ## Generate with an explicit contrast target
 
 > Generate five colors with accessible:"aaa". Show every pair listed in metadata.contrastTarget with its ratio and pass/fail. Describe this as a contrast-targeted palette, not an accessible or certified palette. Keep any locked colors exact and report unmet targets honestly. Measure my intended foreground/background pairings separately.
+
+## Request explicit contrast headroom
+
+> Generate five colors with accessible:"aa" and contrastMinimum:4.8. Show each declared pair's measured ratio, standard margin and target margin. Preserve locks; distinguish passing AA from meeting my extra target. Do not promise that later color changes will stay readable.
