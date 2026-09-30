@@ -32,6 +32,7 @@ Manage your connections at [QRCO Agent Access](https://qrco.ca/agent-access). Us
 - **Compare and audit:** compare up to five directions with a baseline and brand anchors; audit up to ten palettes against real backgrounds and intended text pairings. Compact summaries keep agent conversations focused.
 - **Explore directions:** generate 2–10 colors with fixed anchors, compare up to five palettes, find public Explore palettes and create variations.
 - **Build a usable color system:** derive light/dark backgrounds, surfaces, text, primary, accent, border and focus roles with measured contrast pairings.
+- **Carry contrast context:** optionally embed freshly measured adjacent-pair targets, ratios, margins and failures in exported files without changing colors.
 - **Export design tokens:** CSS, Tailwind CSS v4, SCSS, JSON and SVG palette exports; semantic CSS and Tailwind exports for brand systems.
 - **Continue saved work:** read palettes, custom color names and saved brand systems from your own account.
 - **Revise with control:** preview stronger contrast or an additional mode, review exact changes, then save a new version with separate permission.
