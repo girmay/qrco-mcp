@@ -229,3 +229,22 @@ Use labels, icons, patterns or position for meaning. Run `check_contrast` separa
 Example: `check_color_vision({"colors":["#FF0000","#00AA00","#FFFFFF"],"names":["Stop","Go","Paper"],"includeAllPairs":true})`. Red/green becomes a newly-close pair under deuteranopia (simulated ΔE2000 about2.5798); use additional cues.
 
 Sources: [Machado et al. paper](https://doi.org/10.1109/TVCG.2009.113), [published matrix values via Colour Science](https://raw.githubusercontent.com/colour-science/colour/develop/colour/blindness/datasets/machado2010.py), [Colour's documented tritanomaly limitation](https://colour.readthedocs.io/en/latest/_modules/colour/blindness/machado2009.html).
+
+
+## Correction: legacy accessible generation (public v1.8.1)
+
+`generate_palette` still accepts `accessible:"aa"` or `accessible:"aaa"` for compatibility. These now mean a **normal-text contrast target for consecutive palette pairs**: [0,1], [1,2], … (no wraparound), at4.5:1 or7:1 respectively. They do not certify a palette, arbitrary pairings, CVD accessibility or a finished interface. `generate_palette_set` does not expose this parameter; do not invent it. The backend generation/set/random paths share the correction when this mode is selected.
+
+The old unconditional `metadata.accessible:true` has been removed. `metadata.accessibility` remains the requested level, never evidence of success. Read `metadata.contrastTarget`:
+
+- `scope:"adjacent-pairs"`, `requestedLevel`, `minimum`, `status:"met"|"unmet"`, `allDeclaredPairsPass`, `pairCount`, `failureCount`.
+- `pairs`: exact final colors, zero-based indices, displayed four-decimal ratio, target minimum and `passes` determined from the **unrounded** ratio.
+- `lockedIndices`, `adjustedIndices`, bounded `search` details and explicit limitations.
+
+Generation first creates seed colors and applies material styling. Exact locks are then restored. If the final adjacent pairs fail, QRCO searches two alternating dark/light directions, mixing unlocked colors toward black/white in256 bounded sRGB steps per direction. It takes the first passing step, testing dark-first before light-first at ties. This is not a minimum-change optimizer. With no locks, alternating black/white endpoints guarantee a passing candidate. Locks can leave a target unmet; no passing candidate means the post-material colors and exact locks are retained, `status:"unmet"`, and actual failures remain visible. No global infeasibility claim is made. Adjustments can change the material style's appearance.
+
+Always choose the actual foreground/background pairing and check it with `check_contrast`. API `success:true` means generation completed, not that a locked contrast target was achieved. Old saved or published palettes are not rewritten. Short HEX locks now normalize correctly instead of being silently skipped.
+
+Example: `generate_palette({"accessible":"aaa","size":5,"material":"fabric"})`; inspect all four declared pairs. Adversarial example: `generate_palette({"accessible":"aaa","size":2,"lockedColors":[{"index":0,"hex":"#777777"},{"index":1,"hex":"#777777"}]})` must preserve both locks, report ratio1 and statusunmet, with no blanket accessible flag.
+
+Threshold references: [W3C normal-text AA](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html), [W3C normal-text AAA](https://www.w3.org/WAI/WCAG22/Understanding/contrast-enhanced.html). These requirements concern text/background usage, not palette certification.
