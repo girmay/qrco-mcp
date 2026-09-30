@@ -184,3 +184,9 @@ The agent needs file-writing capability to provide downloads; QRCO returns conte
 ## Review interaction risks
 
 > Generate state colors for #3B82F6 on white. Explain the warnings and focus.fillDiagnostics before calling it usable. If the ring will touch the button, rerun with that fill in focusAdjacentColors. Report text, surface and focus margins; do not count disabled checks as failures.
+
+## Keep a brand contrast contract
+
+> Build light and dark roles from #123456 and #FEDCBA with textContrast 7 and uiContrast 4.5. Keep the anchors exact. Explain any separate link failures. If feasible, show the system and measured export context; do not save yet.
+
+> Preview my saved system without changing its targets. If I ask to lower a target later, show targetChange separately even when no role color changes. Only commit after I ask you to save the reviewed result.
