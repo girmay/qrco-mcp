@@ -241,10 +241,25 @@ The old unconditional `metadata.accessible:true` has been removed. `metadata.acc
 - `pairs`: exact final colors, zero-based indices, displayed four-decimal ratio, target minimum and `passes` determined from the **unrounded** ratio.
 - `lockedIndices`, `adjustedIndices`, bounded `search` details and explicit limitations.
 
-Generation first creates seed colors and applies material styling. Exact locks are then restored. If the final adjacent pairs fail, QRCO searches two alternating dark/light directions, mixing unlocked colors toward black/white in256 bounded sRGB steps per direction. It takes the first passing step, testing dark-first before light-first at ties. This is not a minimum-change optimizer and adds no contrast buffer. A passing result can be very close to the target; recheck after downstream color changes. With no locks, alternating black/white endpoints guarantee a passing candidate. Locks can leave a target unmet; no passing candidate means the post-material colors and exact locks are retained, `status:"unmet"`, and actual failures remain visible. No global infeasibility claim is made. Adjustments can change the material style's appearance.
+Generation first creates seed colors and applies material styling. Exact locks are then restored. If the final adjacent pairs fail, QRCO searches two alternating dark/light directions, mixing unlocked colors toward black/white in256 bounded sRGB steps per direction. It takes the first passing step, testing dark-first before light-first at ties. This is not a minimum-change optimizer and adds no hidden contrast buffer. See optional contrastMinimum below to request a higher target. A passing result can be very close to the target; recheck after downstream color changes. With no locks, alternating black/white endpoints guarantee a passing candidate. Locks can leave a target unmet; no passing candidate means the post-material colors and exact locks are retained, `status:"unmet"`, and actual failures remain visible. No global infeasibility claim is made. Adjustments can change the material style's appearance.
 
 Always choose the actual foreground/background pairing and check it with `check_contrast`. API `success:true` means generation completed, not that a locked contrast target was achieved. Old saved or published palettes are not rewritten. Short HEX locks now normalize correctly instead of being silently skipped.
 
 Example: `generate_palette({"accessible":"aaa","size":5,"material":"fabric"})`; inspect all four declared pairs. Adversarial example: `generate_palette({"accessible":"aaa","size":2,"lockedColors":[{"index":0,"hex":"#777777"},{"index":1,"hex":"#777777"}]})` must preserve both locks, report ratio1 and statusunmet, with no blanket accessible flag.
 
 Threshold references: [W3C normal-text AA](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html), [W3C normal-text AAA](https://www.w3.org/WAI/WCAG22/Understanding/contrast-enhanced.html). These requirements concern text/background usage, not palette certification.
+
+
+## Optional contrast headroom (public v1.9.0)
+
+`generate_palette` accepts optional numeric `contrastMinimum` together with `accessible`. Example: `{"accessible":"aa","contrastMinimum":4.8,"size":5}` or `{"accessible":"aaa","contrastMinimum":7.5,"size":5}`. Minimum allowed is4.5foraa or7foraaa; maximum21. Missing accessible, a lower target, conflicting generation modes and invalid numbers are rejected. No custom headroom parameter on `generate_palette_set` or `random_palette`; those defaults are unchanged.
+
+Omitting the option preserves existing generation exactly. With it, the existing bounded search targets the requested ratio on final adjacent pairs, after material styling and exact-lock restoration. The first passing candidate is used; no additional hidden buffer is added. Larger targets can change colors more or leave a locked target unmet. This is not a color-drift guarantee; remeasure downstream colors and actual text/background usage.
+
+`metadata.contrastTarget.minimum` and pair `minimum`/`passes` now refer to the chosen generation target (unchanged when omitted). Additive fields distinguish the standard from the optional target:
+
+- Report `standardMinimum` (4.5or7), `requestedHeadroom` (chosen minimum minus standard), `allStandardPairsPass`.
+- Each pair: `standardMinimum`, `meetsStandard`, `marginAboveStandard`, `marginAboveTarget`.
+- Margins are signed **contrast-ratio differences**, not percentages, rounded to four decimals for display. All pass decisions use unrounded ratios. A displayed zero margin can hide a tiny positive/negative value; use the booleans for the verdict.
+
+Example with exact locks #767676/#FFFFFF and aa/contrastMinimum4.8: measured4.5422, `meetsStandard:true`, `passes:false`, standard margin+0.0422, target margin−0.2578, report `status:"unmet"` and `allStandardPairsPass:true`. Both colors remain exact. Standard compliance and requested headroom are deliberately separate. Saved palettes are not rewritten.
