@@ -64,7 +64,7 @@ A read-only connection intentionally hides write tools. `save_brand_revision` is
 
 ## Measurements and limits
 
-The legacy `accessible` generation option targets only measured adjacent pairs; inspect `metadata.contrastTarget` for met/unmet status, especially with locks. Optional `contrastMinimum` requests extra headroom above the selected standard; returned margins distinguish the standard and the requested target. It does not certify an entire palette.
+The legacy `accessible` generation option targets only measured adjacent pairs; inspect `metadata.contrastTarget` for met/unmet status, especially with locks. On generation and explicitly targeted variations, optional `contrastMinimum` requests extra headroom above the selected standard; returned margins distinguish the standard and the requested target. It does not certify an entire palette.
 
 Contrast measurements cover the specified opaque sRGB pairings, not complete accessibility certification. The separate `check_color_vision` tool supplies bounded simulations and heuristic pair review; it does not simulate tritanopia or certify distinguishability. CMYK values and Pantone/RAL matches are digital approximations, not physical print specifications. Material modes are creative adjustments, not measured fabric or lighting predictions. Trend generation uses a stored model, not live trend forecasting.
 
