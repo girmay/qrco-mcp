@@ -158,3 +158,7 @@ Use generate_state_colors with baseColor #A65F40, surface #FFFFFF, focusAdjacent
 > Check #FF0000, #00AA00 and #FFFFFF as Stop, Go and Paper using check_color_vision, with all pairs included. Explain which pairs need review and whether they were already close. Preserve every original color. Suggest labels/icons or patterns, not an automatic recolor. State that the blue-yellow result is severe tritanomaly, not tritanopia. Measure actual text contrast separately. Don't save or publish.
 
 Flags are heuristic and condition-specific; neither an empty result nor a large simulated distance proves accessibility.
+
+## Generate with an explicit contrast target
+
+> Generate five colors with accessible:"aaa". Show every pair listed in metadata.contrastTarget with its ratio and pass/fail. Describe this as a contrast-targeted palette, not an accessible or certified palette. Keep any locked colors exact and report unmet targets honestly. Measure my intended foreground/background pairings separately.
