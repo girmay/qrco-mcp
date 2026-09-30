@@ -325,3 +325,13 @@ Format and import references: [Adobe ASE exchange](https://helpx.adobe.com/uk/il
 Published JSON Schema patterns explicitly include uppercase and lowercase HEX, matching existing runtime behavior. Public color arguments retain optional # and 3/6 digits; account save_palette.colors still requires # and six digits. No case/canonicalization or account permission changes.
 
 `search_explore` rejects malformed hash-prefixed queries such as `#GG0000` or `#1234` before catalog retrieval. Valid HEX matches exact normalized colors; other queries still match literal palette names. An empty result for a valid literal name is not a semantic search verdict.
+
+## State and audit diagnostics (public v1.13.0)
+
+`generate_state_colors` now adds explicit warnings naming enabled states whose text or fill-to-surface checks fail. If all four enabled fills fail, the warning says so. These are draft colors; warnings do not recolor them or change export tokens, thresholds, existing pass flags, or totals. A failed fill check matters when that fill identifies the control/state; borders, labels and actual geometry still affect applicability. Disabled checks remain informational and excluded.
+
+Each text, surface and focus check includes `standardMinimum`, `marginAboveStandard` and `marginAboveTarget`. The standard floor is4.5 for normal text and3 for surface/focus pairs; the target is the check's `minimum` (textMinimum can be higher). Signed margins are unrounded-ratio differences displayed to four decimals, not percentages or tolerance guarantees. Disabled standard/margins are null. Brand/link tools do not gain margins in this update.
+
+`focus.fillDiagnostics` compares the chosen ring with each enabled default/hover/active/selected fill: state, fill, ratio, declaredAdjacent, potentialConflict and informationalOnly. potentialConflict means the raw ratio is below3 **if those colors touch**. Undeclared comparisons are informational, excluded from totals; they do not assume layout or downgrade `passes-listed-pairs`. A warning identifies undeclared fills needing review. Add actual touching colors to focusAdjacentColors; verify a real offset/alternative indicator otherwise. Already-declared colors are measured once in focus.checks, not double-counted. Unresolved focus has an empty diagnostic list and still exports no focus token.
+
+`audit_palette` now returns `scope:"all-pairs"` and `duplicates:[{hex,indices}]` (normalized HEX, zero-based indices). Colors and ratio-1 duplicate pairs remain present. Its note explains raw-threshold decisions and that failing non-adjacent pairs do not contradict a separate adjacent-only generation target. The audit receives no prior target and does not claim to have verified one.
