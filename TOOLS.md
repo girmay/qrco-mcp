@@ -252,7 +252,7 @@ Threshold references: [W3C normal-text AA](https://www.w3.org/WAI/WCAG22/Underst
 
 ## Optional contrast headroom (public v1.9.0)
 
-`generate_palette` (and `vary_palette` since v1.10.0) accepts optional numeric `contrastMinimum` together with `accessible`. Example: `{"accessible":"aa","contrastMinimum":4.8,"size":5}` or `{"accessible":"aaa","contrastMinimum":7.5,"size":5}`. Minimum allowed is4.5foraa or7foraaa; maximum21. Missing accessible, a lower target, conflicting generation modes and invalid numbers are rejected. No custom headroom parameter on `generate_palette_set` or `random_palette`; those defaults are unchanged.
+`generate_palette`, `vary_palette` (v1.10.0), and measurement-only `export_palette` (v1.11.0) accept optional numeric `contrastMinimum` together with `accessible`. Example: `{"accessible":"aa","contrastMinimum":4.8,"size":5}` or `{"accessible":"aaa","contrastMinimum":7.5,"size":5}`. Minimum allowed is4.5foraa or7foraaa; maximum21. Missing accessible, a lower target, conflicting generation modes and invalid numbers are rejected. No custom headroom parameter on `generate_palette_set` or `random_palette`; those defaults are unchanged.
 
 Omitting the option preserves existing generation exactly. With it, the existing bounded search targets the requested ratio on final adjacent pairs, after material styling and exact-lock restoration. The first passing candidate is used; no additional hidden buffer is added. Larger targets can change colors more or leave a locked target unmet. This is not a color-drift guarantee; remeasure downstream colors and actual text/background usage.
 
@@ -283,6 +283,27 @@ The MCP variation tool does not accept locks. Its backend API's existing locked/
 
 ## Cross-tool contrast boundaries
 
-A palette's adjacent-pair target is not inherited by other HEX-only tools. `audit_palette` tests all pairs; a failed non-adjacent pair does not contradict a met adjacent-pair target. `build_brand_system` derives different roles and checks its own listed4.5text/3UI pairings, not the input palette's AAA/headroom target. `export_palette` currently exports colors/tokens only and does not preserve the target report; carry the report separately. Richer export metadata and configurable brand-role targets remain follow-ups, not shipped features.
+A palette's adjacent-pair target is not inherited by other HEX-only tools. `audit_palette` tests all pairs; a failed non-adjacent pair does not contradict a met adjacent-pair target. `build_brand_system` derives different roles and checks its own listed4.5text/3UI pairings, not the input palette's AAA/headroom target. `export_palette` now optionally remeasures and embeds an explicitly supplied target (v1.11.0); omitted targets are not inherited. Configurable brand-role targets remain a follow-up.
 
 `random_palette` defaults to five colors when count is omitted (the old description saying random size was incorrect). A target is a requested contract; always inspect the measured verdict.
+
+
+## Contrast context in exports (public v1.11.0)
+
+`export_palette` accepts optional `accessible:"aa"|"aaa"` and `contrastMinimum`. Supply the requested target explicitly, as with generation/variation. Minimum4.5foraa or7foraaa, maximum21; contrastMinimum alone, lower targets and forged contrastTarget objects are rejected. The exporter **measures, never repairs**. Passing generation results and stale reports are not trusted or inherited from HEX.
+
+The response includes `contrastContext` (`explicit-target` or `not-requested`, inherited:false) and `contrastTarget` (report or null). These are separate: explicit-target means a target was supplied, not that it passed. No option preserves existing artifact bytes; its outer warning says no contrast report was embedded.
+
+With a target, the exact same freshly measured report travels in the content:
+
+- JSON: top-level `contrastTarget` alongside name and colors.
+- CSS, SCSS, Tailwind v4: a leading block comment with a short warning and the report as formatted JSON.
+- SVG: XML-escaped JSON text inside `<metadata id="qrco-contrast-target">`.
+
+Report schemaVersion1 carries requestedLevel, standardMinimum, minimum, requestedHeadroom, scopeadjacent-pairs, met/unmet status, standard/target summaries and pair counts. Every pair includes zero-based indices, exact exported token identifiers and HEX, ratio, raw-decision standard/target booleans and signed margins. There is no last-to-first/non-adjacent guarantee. `colorChangesApplied:false` makes preservation explicit. Ratios/margins display four decimals; decisions use raw values.
+
+Token identifiers are the palette keys (e.g. brand-1); CSS adds --, SCSS adds $, Tailwind adds --color-. Names and prefixes keep existing escaping/validation; arbitrary labels are excluded from CSS comment metadata. All exports preserve original normalized colors, order and labels. Failed targets remain embedded failures, even when the standard itself passes.
+
+Example: `export_palette({"colors":["#767676","#FFFFFF"],"names":["Ink","Paper"],"accessible":"aa","contrastMinimum":4.8,"format":"css","prefix":"proof"})`. It exports the unchanged colors with ratio4.5422: standard passes, requested4.8fails, statusunmet, margins+0.0422/−0.2578. There is no recoloring to make the report pass.
+
+The report is handoff documentation, not runtime enforcement, a signature or accessibility certification. Comments/metadata may be removed by build tools or downstream applications; preserve the JSON export when a durable sidecar is needed. Recheck actual use and any edits. No Adobe/Figma native format or synchronization is implemented by this update.
