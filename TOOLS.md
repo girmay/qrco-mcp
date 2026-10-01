@@ -73,7 +73,7 @@ Delta E 2000 uses standard weighting, without capping at 100. `similarityThresho
 
 The exact seed is preserved as `brand-original`, independently of numbered stops. QRCO uses fixed OKLCH lightness targets, starts from the seed’s hue/chroma, and reduces chroma where needed to fit sRGB. Neutral seeds remain neutral. Each stop returns final HEX/OKLCH, target lightness, gamut diagnostics, measured white/black contrast and any requested background checks. CSS and Tailwind CSS v4 exports include the original plus generated stops.
 
-This is QRCO’s recipe, not Tailwind’s built-in palette or equal-perceptual-distance steps. Stop 500 need not equal the seed. Measurements use final 8-bit colors and unrounded thresholds; no complete-accessibility guarantee. The full 11-stop scale exceeds Studio’s 10-color limit: choose a subset before palette tools. No account save, publication or network calls.
+This is QRCO’s recipe, not Tailwind’s built-in palette or equal-perceptual-distance steps. Stop 500 need not equal the seed. Measurements use final 8-bit colors and unrounded thresholds; no complete-accessibility guarantee. The full 11-stop scale exceeds Studio’s 10-color limit: use export_palette for all11stops plus original, or choose a subset for Studio/saving/audits/brand systems. No account save, publication or network calls.
 
 ## Argument and save contract (public v1.2.1 / account v1.0.1)
 
@@ -356,3 +356,11 @@ The outer `contrastTarget` is the freshly measured report: source, scope listed-
 - Unchanged constraints and roles yield canSave:false. Infeasible revisions still yield no saveable system. Commit requires the exact current version, normalized options and previewHash; **refresh previews made before this release**, because their measured result/hash changed.
 - History adds machine type `contrast-target-changed`, with before/after values. Existing historical snapshots and publication snapshots are not rewritten. Save/revise remains private and never republishes automatically.
 - Existing v1 light/v2 dark-or-both system formats remain accepted. Optional contrastTarget is strictly validated; forged status fields, omitted numeric target members and failed role pairs are rejected. Legacy saved systems are not retroactively claimed to meet stronger targets.
+
+## Full tonal-scale exports (public v1.15.0)
+
+`export_palette` accepts **2–12 colors** and matching optional names in all seven formats: CSS, SCSS, Tailwind, JSON, SVG, ASE and DTCG. Pass `generate_tonal_scale.colors.map(c => c.hex)` for all11stops; optionally prepend `original.hex` for12colors. Supply stop labels as names to preserve their meaning. Input order, exact HEX, custom names and duplicates are retained; export keys still use prefix-index, not the tonal generator's stop-number keys. The tonal tool's own CSS/Tailwind retains its original stop keys.
+
+Optional contrast context measures each consecutive exported pair: 10 checks for11colors,11 for12. A tonal ramp is not expected to make every neighboring shade suitable for text; failed targets remain failures and colors are never repaired. ASE retains its JSON sidecar; DTCG retains context in its extension.
+
+This is an export-only limit increase. Studio links, saving, brand systems and palette audits retain their existing10-color limit. Choose a meaningful subset there. Thirteen colors, mismatched labels and invalid HEX still reject. Existing2–10-color artifact content is unchanged.
