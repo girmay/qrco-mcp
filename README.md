@@ -89,3 +89,5 @@ Brand systems now support explicit persisted text/UI contrast targets, enforced 
 Export complete tonal scales: all seven export formats accept up to12colors (11stops plus the original seed), preserving colors and labels. Saved palettes and brand systems remain limited to10.
 
 New brand builds prefer a 0.3 text contrast cushion above the requested floor. Measured textCushion reports flag any unavailable margin; saved requirements and fixed anchors stay unchanged.
+
+AA/AAA generation leads with measured contrastSummary and explicit failure warnings. The legacy accessibility label is a requested level, never an achieved rating.
