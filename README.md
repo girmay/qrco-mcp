@@ -85,3 +85,5 @@ Portable design-app handoff: `export_palette` supports Adobe ASE swatch files (b
 State diagnostics name failing enabled checks, report signed contrast margins, and warn when a focus ring could blend into an undeclared touching fill. Palette audits identify duplicate colors and clarify all-pair scope. Measurements never imply a complete interface certification.
 
 Brand systems now support explicit persisted text/UI contrast targets, enforced on save and retained through revisions, Studio links and measured export headers. Fixed-color infeasibility produces failures with no saveable system; link-use failures remain separate.
+
+Export complete tonal scales: all seven export formats accept up to12colors (11stops plus the original seed), preserving colors and labels. Saved palettes and brand systems remain limited to10.
