@@ -194,3 +194,7 @@ The agent needs file-writing capability to provide downloads; QRCO returns conte
 ## Export a complete tonal scale
 
 > Generate all11tonal stops from #7D4B3F. Export the full scale plus the original seed as ASE and DTCG, using Original/50/100/…/950 as labels. Keep every color in that order; do not save it as a Studio palette or imply adjacent shades pass text contrast.
+
+## Inspect brand text headroom
+
+> Build both modes from #123456 and #FEDCBA with textContrast:7. Report the requested 7 floor and preferred 7.3 cushion separately. Repeat with #767676 and #FEDCBA at the default floor: disclose onPrimary missing the preferred 4.8 even though black ink passes 4.5. Keep the original anchors. Do not save or publish.
