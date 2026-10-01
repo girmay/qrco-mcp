@@ -190,3 +190,7 @@ The agent needs file-writing capability to provide downloads; QRCO returns conte
 > Build light and dark roles from #123456 and #FEDCBA with textContrast 7 and uiContrast 4.5. Keep the anchors exact. Explain any separate link failures. If feasible, show the system and measured export context; do not save yet.
 
 > Preview my saved system without changing its targets. If I ask to lower a target later, show targetChange separately even when no role color changes. Only commit after I ask you to save the reviewed result.
+
+## Export a complete tonal scale
+
+> Generate all11tonal stops from #7D4B3F. Export the full scale plus the original seed as ASE and DTCG, using Original/50/100/…/950 as labels. Keep every color in that order; do not save it as a Studio palette or imply adjacent shades pass text contrast.
