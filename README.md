@@ -91,3 +91,7 @@ Export complete tonal scales: all seven export formats accept up to12colors (11s
 New brand builds prefer a 0.3 text contrast cushion above the requested floor. Measured textCushion reports flag any unavailable margin; saved requirements and fixed anchors stay unchanged.
 
 AA/AAA generation leads with measured contrastSummary and explicit failure warnings. The legacy accessibility label is a requested level, never an achieved rating.
+
+Explore search supports curated tags as well as names: use concise queries such as sunset or warm coffee. Results reflect available catalog entries, without semantic inference.
+
+Search Explore before generating: combine intent, size, measured temperature/lightness/chroma and an actual text-pair contrast threshold. The read-only account search can exclude similarities to your saved library and return matching evidence without exposing private colors.
