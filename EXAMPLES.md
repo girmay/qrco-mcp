@@ -202,3 +202,13 @@ The agent needs file-writing capability to provide downloads; QRCO returns conte
 ## Distinguish request from result
 
 > Generate two locked #777777 colors with accessible aaa. Report the contrastSummary and warnings before the palette: the AAA request is unmet, even though metadata retains its request label. Then try locked #767676/#FFFFFF with aa and contrastMinimum4.8: distinguish the passing4.5floor from the unmet4.8target. Do not save or publish.
+
+## Find a direction in Explore
+
+> Search Explore for warm coffee. Match the words across names and available curated tags. If no result exists yet, say so; do not invent a match or treat theme tags as accessibility certification.
+
+## Find warm editorial colors outside your library
+
+> Use search_explore_for_account with query editorial, temperature warm, colorCount6, minTextContrast4.5, excludeSimilarToSaved true, limit5. Explain the measured pair and similarity policy. Return Studio links; do not save or publish. Generate only if a completed search finds no suitable result.
+
+Without an account connection use public search_explore; it accepts explicit excludePalettes, but cannot read the library.
