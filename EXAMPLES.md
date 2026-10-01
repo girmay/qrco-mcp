@@ -198,3 +198,7 @@ The agent needs file-writing capability to provide downloads; QRCO returns conte
 ## Inspect brand text headroom
 
 > Build both modes from #123456 and #FEDCBA with textContrast:7. Report the requested 7 floor and preferred 7.3 cushion separately. Repeat with #767676 and #FEDCBA at the default floor: disclose onPrimary missing the preferred 4.8 even though black ink passes 4.5. Keep the original anchors. Do not save or publish.
+
+## Distinguish request from result
+
+> Generate two locked #777777 colors with accessible aaa. Report the contrastSummary and warnings before the palette: the AAA request is unmet, even though metadata retains its request label. Then try locked #767676/#FFFFFF with aa and contrastMinimum4.8: distinguish the passing4.5floor from the unmet4.8target. Do not save or publish.
