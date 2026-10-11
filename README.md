@@ -14,8 +14,8 @@ Use an MCP client that supports **remote Streamable HTTP** connections. Client i
 
 | Connection | Server URL | Authentication | Tools |
 | --- | --- | --- | --- |
-| `qrco` | `https://qrco.ca/mcp` | None | 17 public color tools |
-| `qrco-account` | `https://qrco.ca/mcp/account` | OAuth | 4 read tools; up to 4 additional write tools with approval |
+| `qrco` | `https://qrco.ca/mcp` | None | 22 public color tools |
+| `qrco-account` | `https://qrco.ca/mcp/account` | OAuth | 6 read tools; up to 4 additional write tools with approval |
 
 1. Add `https://qrco.ca/mcp` as a remote MCP server. No API key is needed.
 2. Try: **“Create a five-color palette for a modern luxury coffee brand. Name it, explain each color's role and give me a QRCO Studio link.”**
@@ -25,6 +25,18 @@ Use an MCP client that supports **remote Streamable HTTP** connections. Client i
 
 Manage your connections at [QRCO Agent Access](https://qrco.ca/agent-access). Users never need to share passwords, login codes or access tokens in chat. Google sign-in identifies your QRCO account; it does not grant agents Gmail access.
 
+## Interactive palette workspace
+
+Call `present_palette` on the public connection with 2–10 HEX colors, an optional title and matching custom names. Compatible MCP Apps hosts display QRCO’s own Generate button, color locks, Brand/Balance tabs and lead-share controls. Supply a full validated brand system for System view. Proportions affect the presentation, not the source colors. Generation and presentation do not save or publish.
+
+Refresh/rescan the public connector after updates and request a fresh presentation. Native mounting and generation persistence have been user-confirmed in ChatGPT. A text response alone does not prove UI rendering; look for QRCO’s actual controls. Hosts without embedded UI receive structured data and a Studio link. Artwork and file-download support depends on the host; ASE/PNG download acceptance in ChatGPT is still being checked. `export_palette` independently returns all seven supported formats as content.
+
+## Watch a saved palette
+
+The authenticated account endpoint supports `palette.revised` for a specific authorized palette. In a supported ChatGPT Work environment, ask to watch that palette and explain changes using the exact event version from history. A watch does not grant write/publish permission. The client supplies and manages the callback and watch; user-visible output and device notifications depend on that client.
+
+Events use exact protocol `2026-07-28`: `server/discover`, `events/list`, `events/subscribe`, and `events/unsubscribe`, on the same account endpoint. They are protocol methods, not extra ordinary tools. Legacy MCP clients keep their existing tool behavior. Webhook delivery is at least once; deduplicate by event ID. No replay is offered. Subscription expiry is separate from OAuth grant expiry. See [OpenAI Events setup](https://developers.openai.com/plugins/build/mcp-events) for supported clients and callback requirements.
+
 ## What you can do
 
 - **Expand a brand color:** create a 50–950 tonal scale with the exact original retained separately, gamut diagnostics, measured contrast and CSS/Tailwind exports.
@@ -33,7 +45,7 @@ Manage your connections at [QRCO Agent Access](https://qrco.ca/agent-access). Us
 - **Explore directions:** generate 2–10 colors with fixed anchors, compare up to five palettes, find public Explore palettes and create variations.
 - **Build a usable color system:** derive light/dark backgrounds, surfaces, text, primary, accent, border and focus roles with measured contrast pairings.
 - **Carry contrast context:** optionally embed freshly measured adjacent-pair targets, ratios, margins and failures in exported files without changing colors.
-- **Export design tokens:** CSS, Tailwind CSS v4, SCSS, JSON and SVG palette exports; semantic CSS and Tailwind exports for brand systems.
+- **Export design tokens:** CSS, Tailwind CSS v4, SCSS, JSON, SVG, Adobe ASE and DTCG palette exports; semantic CSS and Tailwind exports for brand systems.
 - **Continue saved work:** read palettes, custom color names and saved brand systems from your own account.
 - **Revise with control:** preview stronger contrast or an additional mode, review exact changes, then save a new version with separate permission.
 - **Share deliberately:** publish an explicitly approved palette snapshot to a public QRCO page. Private saves and revisions do not update public pages.
@@ -67,9 +79,9 @@ A read-only connection intentionally hides write tools. `save_brand_revision` is
 
 The legacy `accessible` generation option targets only measured adjacent pairs; inspect `metadata.contrastTarget` for met/unmet status, especially with locks. On generation and explicitly targeted variations, optional `contrastMinimum` requests extra headroom above the selected standard; returned margins distinguish the standard and the requested target. It does not certify an entire palette.
 
-Contrast measurements cover the specified opaque sRGB pairings, not complete accessibility certification. The separate `check_color_vision` tool supplies bounded simulations and heuristic pair review; it does not simulate tritanopia or certify distinguishability. CMYK values and Pantone/RAL matches are digital approximations, not physical print specifications. Material modes are creative adjustments, not measured fabric or lighting predictions. Trend generation uses a stored model, not live trend forecasting.
+Contrast measurements cover the specified opaque sRGB pairings, not complete accessibility certification. The separate `check_color_vision` tool supplies bounded simulations and heuristic pair review; it does not simulate tritanopia or certify distinguishability. CMYK values and Pantone®/RAL matches are digital approximations, not physical print specifications. Material modes are creative adjustments, not measured fabric or lighting predictions. Trend generation uses a stored model, not live trend forecasting.
 
-Image extraction, batch exporting, cultural research and trademark clearance are not currently offered. Custom color names are supported; evocative naming is not guaranteed. Version history begins with tracked edits and cannot recover states overwritten before tracking began.
+Image extraction accepts prepared pixel samples from the client, not image URLs or files. Batch exporting, cultural research and trademark clearance are not offered. Custom color names are supported; evocative naming is not guaranteed. Version history begins with tracked edits and cannot recover states overwritten before tracking began.
 
 ## Links and feedback
 
@@ -78,7 +90,7 @@ Image extraction, batch exporting, cultural research and trademark clearance are
 - [Live plain-text reference](https://qrco.ca/mcp-guide.md)
 - [Agent-readable documentation index](https://qrco.ca/llms.txt)
 
-For feedback, include the MCP client, tool name, expected result and a sanitized error. Never post credentials or private palette contents in public issues. Documentation last reviewed September 29, 2026.
+For feedback, include the MCP client, tool name, expected result and a sanitized error. Never post credentials or private palette contents in public issues. Documentation last reviewed October 11, 2026.
 
 Portable design-app handoff: `export_palette` supports Adobe ASE swatch files (base64 binary plus a JSON report sidecar) and DTCG sRGB JSON for Figma Variables import. Custom names and exact RGB colors are preserved; direct sync is not included. See [format and import details](TOOLS.md#portable-adobe-and-figma-exports-public-v1120).
 
@@ -95,3 +107,4 @@ AA/AAA generation leads with measured contrastSummary and explicit failure warni
 Explore search supports curated tags as well as names: use concise queries such as sunset or warm coffee. Results reflect available catalog entries, without semantic inference.
 
 Search Explore before generating: combine intent, size, measured temperature/lightness/chroma and an actual text-pair contrast threshold. The read-only account search can exclude similarities to your saved library and return matching evidence without exposing private colors.
+
