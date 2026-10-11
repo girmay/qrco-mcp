@@ -4,7 +4,7 @@
 
 ## Public endpoint: https://qrco.ca/mcp
 
-No authentication; Streamable HTTP. Seventeen tools.
+No authentication; Streamable HTTP. Twenty-two tools.
 
 | Tool | Purpose |
 | --- | --- |
@@ -13,22 +13,27 @@ No authentication; Streamable HTTP. Seventeen tools.
 | `random_palette` | generate a random palette. |
 | `inspect_color` | HEX, RGB, HSL, HSB, Lab, CMYK and nearest digital swatch approximations. |
 | `vary_palette` | produce variations from existing colors. |
-| `match_swatch` | nearest digital Pantone approximation and color-distance result; verify physically for print. |
+| `match_swatch` | nearest digital Pantone® approximation and color-distance result; verify physically for print. |
 | `check_contrast` | WCAG 2.x text contrast for two opaque sRGB colors. |
 | `audit_palettes` | Audit 1–10 identified palettes with actual backgrounds and intended pairings. Compact summaries or detailed failures. |
 | `compare_palettes` | Compare 2–5 palettes against a baseline: Delta E 2000, contrast opportunities and exact anchor retention. |
 | `audit_palette` | measured contrast across palette pairs and black/white foreground suggestions. |
 | `create_studio_link` | carry colors, palette title and custom color names into Studio; does not save. |
-| `export_palette` | return CSS, Tailwind CSS v4, SCSS, JSON or SVG content; does not write files. |
+| `export_palette` | return CSS, Tailwind CSS v4, SCSS, JSON, SVG, ASE or DTCG content; does not write files. |
 | `search_explore` | browse the public Explore catalog by name or exact HEX. |
 | `check_color_vision` | Simulate protanopia/deuteranopia/severe tritanomaly and flag pair separation for review. |
 | `generate_state_colors` | Generate interaction/focus colors with actual-surface checks, disabled exclusions and CSS/Tailwind tokens. |
 | `generate_tonal_scale` | Build QRCO 50–950 stops from a seed, preserve an original token, measure contrast and export CSS/Tailwind. |
 | `build_brand_system` | derive light, dark or dual-mode roles, measured pairings, semantic CSS and Tailwind exports. |
+| `extract_image_colors` | Extract 1–10 named colors and coverage from client-prepared image pixels; no image URL/file fetching. |
+| `adjust_color` | Lighten, darken, saturate, desaturate, invert, grayscale or mix colors; choose a color space for mixing. |
+| `generate_gradient` | Interpolate 2–10 input colors into 2–64 steps using sRGB, linear sRGB, Oklab or OKLCH. |
+| `get_capabilities` | Inspect current public tools, schema limits, export formats and connection guidance. |
+| `present_palette` | Present 2–10 exact colors in the native Brand/Balance/System workspace on compatible hosts; no save or publication. |
 
 ## Account endpoint: https://qrco.ca/mcp/account
 
-OAuth; Streamable HTTP. Four read tools and up to four additional write tools, depending on approval. Keep the public connection for color generation.
+OAuth; Streamable HTTP. Six read tools and up to four additional write tools, depending on approval. Keep the public connection for color generation.
 
 | Tool | Permission | Purpose |
 | --- | --- | --- |
@@ -36,6 +41,8 @@ OAuth; Streamable HTTP. Four read tools and up to four additional write tools, d
 | `get_saved_palette` | `palettes:read` | Read colors, custom names, saved brand roles, measured contrast and publication state. |
 | `preview_brand_revision` | `palettes:read` | Preview supporting-role changes, stronger contrast or a missing mode. Returns a previewHash; never saves. |
 | `get_palette_history` | `palettes:read` | List tracked versions or retrieve an exact snapshot. Follow nextBeforeVersion for older pages. |
+| `get_capabilities` | `palettes:read` | Current account scopes and available actions; no credentials or private identity. |
+| `search_explore_for_account` | `palettes:read` | Public Explore search with optional similarity exclusion against your saved library. |
 | `save_palette` | `palettes:save` | Save a palette privately. |
 | `save_brand_revision` | `palettes:revise` | Commit an exact reviewed feasible preview as a new tracked version. |
 | `publish_palette` | `palettes:publish` | Publish an explicitly approved snapshot and description to a public page. |
@@ -93,7 +100,7 @@ Every roles object contains exactly `background`, `surface`, `text`, `mutedText`
 
 `preview_brand_revision` requires an existing saved `metadata.brandSystem`. Preview options may be omitted or partial; the result returns their complete normalized form. **Saving requires all four returned option fields** (`addMissingMode`, `textContrast`, `uiContrast`, `lockedRoles`), plus the preview's `id`, saved-palette `version`, `previewHash`, and a fresh UUID `requestId`. Copy them; do not rebuild options from the initial request. Only save a reviewed canSave:true preview; changes may be roles or targetChange. Changed inputs or palette versions require a new preview. Reuse identical arguments/requestId only to retry the same save. No publish occurs.
 
-HEX ratios concern opaque sRGB colors. They do not predict tattoo healing/appearance, physical skin, fabric, paint or lighting. Nearest Pantone catalog results need physical proofing with the production provider; they are not production approval or trademark clearance. Neutral tonal seeds intentionally yield neutral ramps.
+HEX ratios concern opaque sRGB colors. They do not predict tattoo healing/appearance, physical skin, fabric, paint or lighting. Nearest Pantone® catalog results need physical proofing with the production provider; they are not production approval or trademark clearance. Neutral tonal seeds intentionally yield neutral ramps.
 
 ## Brand colors used as links (public v1.3.0 / account v1.1.0)
 
@@ -117,9 +124,9 @@ This makes the family request enforceable; it does not assign danger/status mean
 
 `brief` and `variants` were already absent from the preceding MCP schemas; strict validation now rejects them instead of ignoring them. `vary_palette` already required 2–10 colors. Brand-system `pairings` already include focus/background and focus/surface checks; geometry, occlusion and full focus accessibility remain outside those measurements.
 
-## Nearest Pantone option by tool
+## Nearest Pantone® option by tool
 
-`includePantone` is accepted by `generate_palette` and `inspect_color`, but **not** by `generate_palette_set`. Omit it from batch-generation calls; unknown arguments are rejected. To obtain a nearest Pantone catalog match for a chosen batch color, call `match_swatch` with its `hex`. This documents the current schemas; it does not add batch matching or certify physical print results.
+`includePantone®` is accepted by `generate_palette` and `inspect_color`, but **not** by `generate_palette_set`. Omit it from batch-generation calls; unknown arguments are rejected. To obtain a nearest Pantone® catalog match for a chosen batch color, call `match_swatch` with its `hex`. This documents the current schemas; it does not add batch matching or certify physical print results.
 
 ## Save identity and revision readiness (account v1.1.1)
 
@@ -139,11 +146,11 @@ For `preview_brand_revision`, provide the saved palette's `id` and current `vers
 
 ## Swatch match quality (public v1.4.0)
 
-`match_swatch` and `inspect_color` now return `distanceMetric` and `matchQuality` alongside each nearest catalog result. Pantone ranking retains **CIE76**; RAL retains **CIEDE2000**. These numeric distances are not interchangeable. Existing nearest matches and displayed distances are unchanged.
+`match_swatch` and `inspect_color` now return `distanceMetric` and `matchQuality` alongside each nearest catalog result. Pantone® ranking retains **CIE76**; RAL retains **CIEDE2000**. These numeric distances are not interchangeable. Existing nearest matches and displayed distances are unchanged.
 
 `success:true` means the lookup completed, not that a close match exists. Inspect `matchQuality.band`, `isCloseMatch`, and `warning` before recommending a swatch. QRCO's conservative review bands are: near ≤2, approximate >2–5, distant >5–10, poor >10. They are product heuristics, not industry acceptance tolerances. Decisions use the unrounded `evaluatedDeltaE`; approximate, distant and poor results carry warnings. Even near matches have `physicalProofRequired:true` for the intended substrate, finish and lighting.
 
-For example, `match_swatch({"hex":"#FF00FF"})` currently finds a nearest Pantone swatch at CIE76 ΔE 30.686, explicitly marked `poor` and `isCloseMatch:false`. Report it as a poor catalog approximation, not a production-ready match. No physical rendering or trademark clearance is implied.
+For example, `match_swatch({"hex":"#FF00FF"})` currently finds a nearest Pantone® swatch at CIE76 ΔE 30.686, explicitly marked `poor` and `isCloseMatch:false`. Report it as a poor catalog approximation, not a production-ready match. No physical rendering or trademark clearance is implied.
 
 ## Repeatable variations (public v1.5.0)
 
@@ -312,7 +319,7 @@ The report is handoff documentation, not runtime enforcement, a signature or acc
 
 `export_palette` adds `format:"ase"` and `format:"dtcg"`. Both preserve input order and normalized RGB colors; neither writes files, saves palettes, syncs applications, or invents brand roles/modes. Existing five formats retain their behavior.
 
-- **Adobe ASE:** `content` is **base64**, `encoding:"base64"`, `fileName:"<prefix>.ase"`, with a byteLength. Decode it to binary before saving. Ordered normal RGB swatches retain custom names (including Unicode); no CMYK conversion, ICC profile or spot-ink/Pantone specification. Import through the receiving Adobe application's swatch-library controls. Duplicate labels are retained in the file; apps may rename or merge them.
+- **Adobe ASE:** `content` is **base64**, `encoding:"base64"`, `fileName:"<prefix>.ase"`, with a byteLength. Decode it to binary before saving. Ordered normal RGB swatches retain custom names (including Unicode); no CMYK conversion, ICC profile or spot-ink/Pantone® specification. Import through the receiving Adobe application's swatch-library controls. Duplicate labels are retained in the file; apps may rename or merge them.
 - **Figma/DTCG:** `content` is UTF-8 JSON, `encoding:"utf-8"`, `fileName:"<prefix>.tokens.json"`. Uses DTCG 2025.10 color tokens with sRGB components, alpha1 and HEX. Safe prefix-index keys become variable names; custom labels become `$description`, so duplicate names do not collide. In Figma Variables, create a new collection and drag this one JSON file into the Variables view to import one mode. Importing into an existing mode can replace matching variables.
 - **Measured context:** optional accessible/contrastMinimum still measures exact adjacent token pairs without changing colors. DTCG carries context in `$extensions["ca.qrco"]`. ASE cannot carry the report: its `sidecar` contains fileName, mimeType, encoding and UTF-8 JSON content with tokens and contrast context. Keep that JSON alongside the ASE, including any failed target. With no target the context explicitly says not-requested. Importers may discard extensions/descriptions; retain the source report.
 
@@ -400,3 +407,17 @@ Public `excludePalettes` accepts up to50explicit color arrays. `similarityThresh
 Account `search_explore_for_account` accepts the same filters with `excludeSimilarToSaved:true` by default and requires only palettes:read. It reads the authenticated owner's full saved library internally (up to1000), with no caller-supplied identity and no private colors/names in shared caches or results. `libraryComparison` reports requested/complete/count. Set false to bypass that read. Public MCP never acquires account access; use the account connection for automatic exclusion. Existing read grants suffice after refreshing discovery.
 
 `status:matches|no-matches` denotes a completed search. More than50000candidate/reference comparisons returns `status:refine-query`, code EXPLORE_TOO_BROAD, total:null, no partial list; narrow filters. A library beyond1000 returns EXPLORE_LIBRARY_LIMIT with no partial exclusion. Honest no-match means no generated fallback was supplied. Normal pagination is stable for a fixed corpus/library; later calls can see edits. Schema validation remains strict. No saved data, color engine, auth policy or catalog content was changed by this feature.
+
+
+## Interactive palette workspace
+
+Call `present_palette` on the public connection with 2–10 HEX colors, an optional title and matching custom names. Compatible MCP Apps hosts display QRCO’s own Generate button, color locks, Brand/Balance tabs and lead-share controls. Supply a full validated brand system for System view. Proportions affect the presentation, not the source colors. Generation and presentation do not save or publish.
+
+Refresh/rescan the public connector after updates and request a fresh presentation. Native mounting and generation persistence have been user-confirmed in ChatGPT. A text response alone does not prove UI rendering; look for QRCO’s actual controls. Hosts without embedded UI receive structured data and a Studio link. Artwork and file-download support depends on the host; ASE/PNG download acceptance in ChatGPT is still being checked. `export_palette` independently returns all seven supported formats as content.
+
+## Watch a saved palette
+
+The authenticated account endpoint supports `palette.revised` for a specific authorized palette. In a supported ChatGPT Work environment, ask to watch that palette and explain changes using the exact event version from history. A watch does not grant write/publish permission. The client supplies and manages the callback and watch; user-visible output and device notifications depend on that client.
+
+Events use exact protocol `2026-07-28`: `server/discover`, `events/list`, `events/subscribe`, and `events/unsubscribe`, on the same account endpoint. They are protocol methods, not extra ordinary tools. Legacy MCP clients keep their existing tool behavior. Webhook delivery is at least once; deduplicate by event ID. No replay is offered. Subscription expiry is separate from OAuth grant expiry. See [OpenAI Events setup](https://developers.openai.com/plugins/build/mcp-events) for supported clients and callback requirements.
+
