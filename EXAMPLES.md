@@ -115,9 +115,9 @@ This is read-only. `feasible:true` and `canSave:false` is a valid unchanged outc
 
 ## Reject a poor catalog approximation
 
-Ask: “Find the nearest Pantone for #FF00FF and inspect its RAL approximation. Report the metric, distance, match-quality band and warning. If it is poor, say so; don't treat lookup success as proof that it is close.”
+Ask: “Find the nearest Pantone® for #FF00FF and inspect its RAL approximation. Report the metric, distance, match-quality band and warning. If it is poor, say so; don't treat lookup success as proof that it is close.”
 
-Use `match_swatch({"hex":"#FF00FF"})` and `inspect_color({"hex":"#FF00FF","includePantone":true})`. Public v1.4.0 provides `distanceMetric` and `matchQuality`; the Pantone assessment should agree between tools. The catalog lookup still succeeds when no close match exists. Bands are QRCO review heuristics; physical proofing remains necessary even for a near result.
+Use `match_swatch({"hex":"#FF00FF"})` and `inspect_color({"hex":"#FF00FF","includePantone®":true})`. Public v1.4.0 provides `distanceMetric` and `matchQuality`; the Pantone® assessment should agree between tools. The catalog lookup still succeeds when no close match exists. Bands are QRCO review heuristics; physical proofing remains necessary even for a near result.
 
 ## Explore without cumulative whitening
 
@@ -212,3 +212,16 @@ The agent needs file-writing capability to provide downloads; QRCO returns conte
 > Use search_explore_for_account with query editorial, temperature warm, colorCount6, minTextContrast4.5, excludeSimilarToSaved true, limit5. Explain the measured pair and similarity policy. Return Studio links; do not save or publish. Generate only if a completed search finds no suitable result.
 
 Without an account connection use public search_explore; it accepts explicit excludePalettes, but cannot read the library.
+
+
+## Open the interactive workspace
+
+> Use QRCO’s present_palette tool to show #A65F40, #292321, #F3EBDD, #8CB2AB and #597A8C as Copper & Counsel. Open Brand and Balance. Do not save or publish.
+
+Use the public connection. Look for QRCO’s own Generate button, locks and tabs; an assistant-drawn preview is not the native workspace.
+
+## Watch one saved palette
+
+> Watch the saved palette I choose for palette.revised. Explain each new revision using its exact version from history. Deduplicate event IDs and do not modify or publish anything.
+
+Requires the account connection and an Events-capable client. Confirm subscription success before testing with an explicitly approved revision. Client notification behavior is separate from QRCO callback acknowledgement.
